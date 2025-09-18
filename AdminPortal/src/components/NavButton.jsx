@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
-const Button = ({btnText, navLink}) => {
+const NavButton = ({btnText, navLink}) => {
     return (
         <NavLink
             to={navLink}
@@ -15,4 +15,4 @@ const Button = ({btnText, navLink}) => {
     )
 }
 
-export default Button
+export default NavButton

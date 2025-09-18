@@ -6,9 +6,9 @@ import AssignClass from './pages/AssignClass'
 import ViewAssignments from './pages/ViewAssignments'
 import AttendanceReports from './pages/AttendanceReports'
 import ContentLayout from './layouts/ContentLayout'
-import StudentsForm from './pages/StudentsForm'
-import CoursesForm from './pages/CoursesForm'
-import FacultiesForm from './pages/FacultiesForm'
+import StudentsUploadTab from './pages/update_tabs/StudentsUploadTab'
+import CoursesUploadTab from './pages/update_tabs/CoursesUploadTab'
+import FacultiesUploadTab from './pages/update_tabs/FacultiesUploadTab'
 
 function App() {
 
@@ -26,9 +26,9 @@ function App() {
 							element: <UpdateData />,
 							children: [
 								{index: true, element: <Navigate to="students" />},
-								{path: "students", element: <StudentsForm />},
-								{path: "courses", element: <CoursesForm />},
-								{path: "faculties", element: <FacultiesForm />},
+								{path: "students", element: <StudentsUploadTab />},
+								{path: "courses", element: <CoursesUploadTab />},
+								{path: "faculties", element: <FacultiesUploadTab />},
 							]
 						},
 						{ path: "assign-class", element: <AssignClass /> },
