@@ -1,12 +1,17 @@
-import React from 'react'
+import { Outlet } from 'react-router-dom'
+import Tab from '../components/Tab'
 
 const UpdateData = () => {
-  return (
-    <div className='flex flex-col p-2'>
-      <h2 className='text-xl font-bold mb-2'>New Semester Bulk Data Upload</h2>
-      <p className='text-sm text-gray-800'>Please provide the three required data files in CSV format</p>
-    </div>
-  )
+	return (
+		<div className='flex-1 flex flex-col'>
+			<div className='flex'>
+				<Tab btnText='Student' navLink="students" />
+				<Tab btnText='Courses' navLink="courses" />
+				<Tab btnText='Faculties' navLink="faculties" />
+			</div>
+			<Outlet/>
+		</div>
+	)
 }
 
 export default UpdateData

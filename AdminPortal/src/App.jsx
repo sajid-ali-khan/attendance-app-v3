@@ -1,28 +1,39 @@
 import { useState } from 'react'
 import MainLayout from './layouts/MainLayout'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import UpdateData from './pages/UpdateData'
 import AssignClass from './pages/AssignClass'
 import ViewAssignments from './pages/ViewAssignments'
 import AttendanceReports from './pages/AttendanceReports'
 import ContentLayout from './layouts/ContentLayout'
-import { Link } from 'react-router-dom'
+import StudentsForm from './pages/StudentsForm'
+import CoursesForm from './pages/CoursesForm'
+import FacultiesForm from './pages/FacultiesForm'
 
 function App() {
 
 	const router = createBrowserRouter([
 		{
-			path: "/",
+			path: "",
 			element: <MainLayout />,
 			children: [
 				{
 					element: <ContentLayout />,
 					children: [
-						{ index: true, element: <UpdateData /> },
-						{ path: "/update-data", element: <UpdateData /> },
-						{ path: "/assign-class", element: <AssignClass /> },
-						{ path: "/view-assignments", element: <ViewAssignments /> },
-						{ path: "/attendance-reports", element: <AttendanceReports /> }
+						{index: true, element: <Navigate to="update-data" />},
+						{
+							path: "update-data",
+							element: <UpdateData />,
+							children: [
+								{index: true, element: <Navigate to="students" />},
+								{path: "students", element: <StudentsForm />},
+								{path: "courses", element: <CoursesForm />},
+								{path: "faculties", element: <FacultiesForm />},
+							]
+						},
+						{ path: "assign-class", element: <AssignClass /> },
+						{ path: "view-assignments", element: <ViewAssignments /> },
+						{ path: "attendance-reports", element: <AttendanceReports /> }
 					]
 				},
 			]

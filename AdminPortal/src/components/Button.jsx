@@ -1,13 +1,17 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 const Button = ({btnText, navLink}) => {
     return (
-        <Link
+        <NavLink
             to={navLink}
-            className='border-2 text-center rounded-md px-3 py-2 shadow cursor-pointer bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800'>
+            className={({ isActive }) =>
+                `text-center px-6 py-2 cursor-pointer font-bold
+     ${isActive ? "bg-linear-65 from-blue-700 to-blue-400 text-white" : "bg-white hover:bg-gray-200"}`
+            }
+            >
             {btnText}
-        </Link>
+        </NavLink>
     )
 }
 

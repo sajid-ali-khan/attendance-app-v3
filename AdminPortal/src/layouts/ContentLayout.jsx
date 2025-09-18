@@ -2,7 +2,7 @@ import React from 'react'
 import { Outlet } from 'react-router-dom'
 const ContentLayout = () => {
     return (
-        <div className='p-4 flex-1'>
+        <div className='flex-1 flex bg-white m-2 shadow-2xl'>
             <Outlet/>
         </div>
     )
