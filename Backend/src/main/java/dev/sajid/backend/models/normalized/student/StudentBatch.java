@@ -27,7 +27,7 @@ public class StudentBatch {
     @Column(nullable = false)
     private int semester;
 
-    @OneToMany(mappedBy = "student_batch", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "studentBatch", fetch = FetchType.LAZY)
     private List<Student> students = new ArrayList<>();
 
     @OneToMany(mappedBy = "studentBatch", fetch = FetchType.LAZY)
