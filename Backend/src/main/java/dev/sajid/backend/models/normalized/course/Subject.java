@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -27,5 +28,5 @@ public class Subject {
     private SubjectType subjectType;
 
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
-    private List<ProgramSubject> programSubjects;
+    private List<ProgramSubject> programSubjects = new ArrayList<>();
 }

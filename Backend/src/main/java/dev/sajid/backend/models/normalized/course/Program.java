@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -31,5 +32,8 @@ public class Program {
     private Branch branch;
 
     @OneToMany(mappedBy = "program", fetch = FetchType.LAZY)
-    private List<StudentBatch> studentBatches;
+    private List<StudentBatch> studentBatches = new ArrayList<>();
+
+    @OneToMany(mappedBy = "program", fetch = FetchType.LAZY)
+    private List<ProgramSubject> programSubjects = new ArrayList<>();
 }

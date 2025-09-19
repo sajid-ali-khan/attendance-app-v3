@@ -1,11 +1,13 @@
 package dev.sajid.backend.models.normalized.student;
 
 import dev.sajid.backend.models.normalized.course.Program;
+import dev.sajid.backend.models.normalized.derived.Course;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -26,5 +28,8 @@ public class StudentBatch {
     private int semester;
 
     @OneToMany(mappedBy = "student_batch", fetch = FetchType.LAZY)
-    private List<Student> students;
+    private List<Student> students = new ArrayList<>();
+
+    @OneToMany(mappedBy = "studentBatch", fetch = FetchType.LAZY)
+    private List<Course> courses = new ArrayList<>();
 }
