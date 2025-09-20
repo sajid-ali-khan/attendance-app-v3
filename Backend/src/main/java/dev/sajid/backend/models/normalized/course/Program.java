@@ -20,7 +20,7 @@ public class Program {
     private int id;
 
     @Column(nullable = false)
-    private Degree degree;
+    private Degree degree = Degree.BTech;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scheme_id", nullable = false)

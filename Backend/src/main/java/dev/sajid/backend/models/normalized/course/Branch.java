@@ -14,6 +14,11 @@ public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String shortName;
-    private String fullName;
+
+    @Column(nullable = false)
+    private int branchCode;
+
+    @Column(nullable = false)
+    private String shortForm;
+    private String fullForm;
 }
