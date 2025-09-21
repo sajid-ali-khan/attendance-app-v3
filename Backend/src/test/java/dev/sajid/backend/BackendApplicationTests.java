@@ -89,7 +89,7 @@ class BackendApplicationTests {
         rawCourses.add(new Course("BTECH", "20", "11", 4, "EM1", "Engineering Mathematics 1"));
         rawCourses.add(new Course("BTECH", "23", "33", 4, "DAA", "Design and Analysis of Algorithms"));
         rawCourses.add(new Course("BTECH", "20", "23", 4, "MEFA", "Managerial Economics and Financial Economics"));
-        rawCourseProcessor.extractSchemes(rawCourses);
+        rawCourseProcessor.findOrCreateSchemes(rawCourses);
 
         List<Scheme> schemes = schemeRepository.findAll();
 
