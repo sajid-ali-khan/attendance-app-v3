@@ -16,4 +16,6 @@ public interface BranchRepository extends JpaRepository<Branch, Integer>{
 
     @Query("select b.id from Branch b where b.shortForm = :shortForm")
     int findIdByShortForm(@Param("shortForm") String shortForm);
+
+    Optional<Branch> findByBranchCode(int branchCode);
 }
