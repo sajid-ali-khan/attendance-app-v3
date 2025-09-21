@@ -19,10 +19,10 @@ public class Subject {
     private int id;
 
     @Column(nullable = false)
-    private String code;
+    private String shortForm;
 
     @Column(nullable = false)
-    private String name;
+    private String fullForm;
 
     @Column(nullable = false)
     private SubjectType subjectType;
