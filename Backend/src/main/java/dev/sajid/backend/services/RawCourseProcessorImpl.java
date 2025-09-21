@@ -27,12 +27,6 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
     record ProgramKey(Degree degree, int schemeId, int branchId) {}
     record ProgramSubjectKey(int programId, int subjectId, int semester) {}
 
-    Map<String, Scheme> schemesMap;
-    Map<Integer, Branch> branchesMap;
-    Map<String, Subject> subjectsMap;
-    Map<ProgramKey, Program> programsMap;
-
-
     RawCourseProcessorImpl(ProgramRepository programRepository, BranchRepository branchRepository,
             SchemeRepository schemeRepository, SubjectRepository subjectRepository, ProgramSubjectRepository programSubjectRepository) {
         this.programRepository = programRepository;
@@ -47,13 +41,13 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
     @Transactional
     public void processRawCourses(List<Course> rawCourses) {
         // The order of operations is critical
-        schemesMap = findOrCreateSchemes(rawCourses);
-        branchesMap = findOrCreateBranches(rawCourses);
-        subjectsMap = findOrCreateSubjects(rawCourses);
-        programsMap = findOrCreatePrograms(rawCourses, schemesMap, branchesMap);
+        Map<String, Scheme> schemesMap = findOrCreateSchemes(rawCourses);
+        Map<Integer, Branch> branchesMap = findOrCreateBranches(rawCourses);
+        Map<String, Subject> subjectsMap = findOrCreateSubjects(rawCourses);
+        Map<ProgramKey, Program> programsMap = findOrCreatePrograms(rawCourses, schemesMap, branchesMap);
         
         // This is the final step, using all the data we've prepared
-        createProgramSubjects(rawCourses, programsMap, subjectsMap);
+        createProgramSubjects(rawCourses, schemesMap, branchesMap, programsMap, subjectsMap);
     }
     
     // Each of these methods will now follow the "fetch, find new, save all, return map" pattern
@@ -157,7 +151,7 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
     
     // The final, corrected linking step
     @Override
-    public void createProgramSubjects(List<Course> rawCourses, Map<ProgramKey, Program> programsMap, Map<String, Subject> subjectsMap) {
+    public void createProgramSubjects(List<Course> rawCourses, Map<String, Scheme> schemesMap, Map<Integer, Branch> branchesMap, Map<ProgramKey, Program> programsMap, Map<String, Subject> subjectsMap) {
         Set<ProgramSubjectKey> existingLinks = programSubjectRepository.findAll().stream()
             .map(ps -> new ProgramSubjectKey(ps.getProgram().getId(), ps.getSubject().getId(), ps.getSemester()))
             .collect(Collectors.toSet());

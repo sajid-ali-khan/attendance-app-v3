@@ -19,5 +19,5 @@ public interface RawCourseProcessor {
     Map<Integer, Branch> findOrCreateBranches(List<Course> rawCourses);
     Map<ProgramKey, Program> findOrCreatePrograms(List<Course> rawCourses, Map<String, Scheme> schemesMap, Map<Integer, Branch> branchesMap);// also need scheme, branch repos
     Map<String, Subject> findOrCreateSubjects(List<Course> rawCourses);
-    void createProgramSubjects(List<Course> rawCourses, Map<ProgramKey, Program> programsMap, Map<String, Subject> subjectsMap); 
+    void createProgramSubjects(List<Course> rawCourses, Map<String, Scheme> schemesMap, Map<Integer, Branch> branchesMap, Map<ProgramKey, Program> programsMap, Map<String, Subject> subjectsMap); 
 }
