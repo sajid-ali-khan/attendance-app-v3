@@ -10,6 +10,11 @@ import { SchemaTable } from "../components/shared/SchemaTable";
 export const BulkUploadView = () => {
   const [activeTab, setActiveTab] = useState('students');
   const tabs = [{ id: 'students', label: 'Students' }, { id: 'courses', label: 'Courses' }, { id: 'faculties', label: 'Faculties' }];
+  const api = {
+    "students": "student api",
+    "courses": "courses api",
+    "faculties": "faculties api"
+  }
 
   return (
     <div>

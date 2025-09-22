@@ -1,6 +1,3 @@
-// Description: The root component that manages routing and renders the main layout.
-// ====================================================================================
-import React from 'react';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import { DashboardView } from './views/DashboardView';
 import { BulkUploadView } from './views/BulkUploadView';
