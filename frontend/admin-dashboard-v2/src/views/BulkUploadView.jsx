@@ -31,7 +31,7 @@ export const BulkUploadView = () => {
         </div>
         <div className="pt-6">
             <SchemaTable schema={SCHEMA_DATA[activeTab]} />
-            <FileUploader />
+            <FileUploader api={api[activeTab]}/>
         </div>
       </Card>
     </div>
