@@ -6,11 +6,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import dev.sajid.backend.models.normalized.faculty.Faculty;
 import dev.sajid.backend.models.raw.Employee;
 import dev.sajid.backend.repositories.FacultyRepository;
 
+@Service
 public class RawEmployeeProcessorImpl implements RawEmployeeProcessor {
     @Autowired
     FacultyRepository facultyRepository;
