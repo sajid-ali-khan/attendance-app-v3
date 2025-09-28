@@ -4,8 +4,10 @@ import com.opencsv.bean.CsvBindByName;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 @AllArgsConstructor
 public class Student {
     @CsvBindByName(column = "roll", required = true)
