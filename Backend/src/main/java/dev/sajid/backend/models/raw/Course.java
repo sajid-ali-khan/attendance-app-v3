@@ -4,11 +4,15 @@ import com.opencsv.bean.CsvBindByName;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @AllArgsConstructor
 @ToString
+@NoArgsConstructor
+
+
 public class Course {
     @CsvBindByName(column = "degr", required = true)
     private String degree;

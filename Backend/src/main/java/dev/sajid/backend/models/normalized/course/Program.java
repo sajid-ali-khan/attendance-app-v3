@@ -20,6 +20,7 @@ public class Program {
     private int id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Degree degree = Degree.BTech;
 
     @ManyToOne(fetch = FetchType.LAZY)

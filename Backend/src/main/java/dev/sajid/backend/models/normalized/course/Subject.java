@@ -25,6 +25,7 @@ public class Subject {
     private String fullForm;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private SubjectType subjectType;
 
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
 @RequestMapping("/api/courses")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin
 public class CourseController {
     @Autowired
     CsvProcessingService csvProcessingService;
