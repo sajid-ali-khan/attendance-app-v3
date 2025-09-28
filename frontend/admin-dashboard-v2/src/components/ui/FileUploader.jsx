@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 
 // ====================================================================================
@@ -24,10 +25,18 @@ export const FileUploader = ({ api }) => {
         // The 'file' object in state is ready to be sent to an API.
         console.log('Uploading file:', file);
         console.log(api)
-        // Example API call structure:
-        // api.upload(file)
-        //   .then(response => console.log('Upload successful:', response))
-        //   .catch(err => setError('Upload failed: ' + err.message));
+        const formData = new FormData();
+        formData.append('file', file);
+        axios.post(api, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(response => {
+            console.log('File uploaded successfully:', response.data);
+        }).catch(error => {
+            console.error('Error uploading file:', error);
+            setError('Failed to upload file. Please try again.');
+        });
         setError(''); // Clear error on successful start
     };
 

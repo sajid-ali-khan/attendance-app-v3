@@ -11,9 +11,9 @@ export const BulkUploadView = () => {
   const [activeTab, setActiveTab] = useState('students');
   const tabs = [{ id: 'students', label: 'Students' }, { id: 'courses', label: 'Courses' }, { id: 'faculties', label: 'Faculties' }];
   const api = {
-    "students": "student api",
-    "courses": "courses api",
-    "faculties": "faculties api"
+    "students": "http://localhost:8000/api/students/upload/",
+    "courses": "http://localhost:8000/api/courses/upload/",
+    "faculties": "http://localhost:8000/api/faculties/upload/"
   }
 
   return (
