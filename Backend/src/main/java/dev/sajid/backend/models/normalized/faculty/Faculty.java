@@ -19,7 +19,7 @@ public class Faculty {
     private int id;
 
     @Column(nullable = false)
-    private String code;
+    private int code;
 
     private String name;
     private String gender;
