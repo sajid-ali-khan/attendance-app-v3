@@ -2,34 +2,34 @@ export const SCHEMA_DATA = {
   students: {
     title: 'Students CSV Schema',
     fields: [
-        { fieldName: 'student_id', dataType: 'String', required: true, unique: true, example: 'S101' },
-        { fieldName: 'roll_number', dataType: 'String', required: true, unique: true, example: '21CS001' },
-        { fieldName: 'student_name', dataType: 'String', required: true, unique: false, example: 'John Doe' },
-        { fieldName: 'email', dataType: 'String', required: true, unique: true, example: 'john.doe@example.com' },
-        { fieldName: 'phone_number', dataType: 'String', required: false, unique: true, example: '1234567890' },
+        { fieldName: 'roll', dataType: 'String', required: true, unique: true, example: '229x1a2851' },
+        { fieldName: 'name', dataType: 'String', required: true, unique: false, example: 'Patan Sajid Ali Khan' },
+        { fieldName: 'branch', dataType: 'String', required: true, unique: false, example: '31, 21' },
+        { fieldName: 'section', dataType: 'String', required: true, unique: false, example: 'A' },
         { fieldName: 'semester', dataType: 'Integer', required: true, unique: false, example: '4' },
-        { fieldName: 'branch_code', dataType: 'String', required: true, unique: false, example: 'CS' },
+        { fieldName: 'scheme', dataType: 'String', required: true, unique: false, example: '20, 23, 20x' },
+        { fieldName: 'degree', dataType: 'String', required: false, unique: false, example: 'Btech(default), Mtech' },
     ]
   },
   courses: {
     title: 'Courses CSV Schema',
     fields: [
-        { fieldName: 'course_id', dataType: 'String', required: true, unique: true, example: 'C202' },
-        { fieldName: 'course_name', dataType: 'String', required: true, unique: false, example: 'Data Structures' },
-        { fieldName: 'course_code', dataType: 'String', required: true, unique: true, example: 'CS202' },
+        { fieldName: 'degree', dataType: 'String', required: true, unique: false, example: 'Btech' },
+        { fieldName: 'scheme', dataType: 'String', required: true, unique: false, example: '20, 23, 20x' },
+        { fieldName: 'branch', dataType: 'String', required: true, unique: false, example: '12, 32' },
         { fieldName: 'semester', dataType: 'Integer', required: true, unique: false, example: '4' },
-        { fieldName: 'branch_code', dataType: 'String', required: true, unique: false, example: 'CS' },
-        { fieldName: 'credits', dataType: 'Integer', required: true, unique: false, example: '4' },
+        { fieldName: 'scode', dataType: 'String', required: true, unique: false, example: 'DAA, MEFA' },
+        { fieldName: 'subname', dataType: 'String', required: true, unique: false, example: 'Data Structures, Android Development Lab' },
     ]
   },
   faculties: {
     title: 'Faculties CSV Schema',
     fields: [
-        { fieldName: 'faculty_id', dataType: 'String', required: true, unique: true, example: 'F303' },
-        { fieldName: 'faculty_name', dataType: 'String', required: true, unique: false, example: 'Dr. Jane Smith' },
-        { fieldName: 'email', dataType: 'String', required: true, unique: true, example: 'jane.smith@example.com' },
-        { fieldName: 'phone_number', dataType: 'String', required: false, unique: true, example: '0987654321' },
-        { fieldName: 'department_code', dataType: 'String', required: true, unique: false, example: 'CS' },
+        { fieldName: 'empid', dataType: 'Integer', required: true, unique: true, example: '1001' },
+        { fieldName: 'pwd', dataType: 'String', required: true, unique: false, example: '12345, sajid@1234' },
+        { fieldName: 'gender', dataType: 'String', required: false, unique: false, example: 'Female, Male' },
+        { fieldName: 'salutation', dataType: 'String', required: false, unique: false, example: 'Dr., Prof.' },
+        { fieldName: 'name', dataType: 'String', required: true, unique: false, example: 'Zahoor Ul Haq' },
     ]
   },
 };
