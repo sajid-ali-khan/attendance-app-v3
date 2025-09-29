@@ -19,7 +19,7 @@ public class Faculty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private int code;
 
     private String name;

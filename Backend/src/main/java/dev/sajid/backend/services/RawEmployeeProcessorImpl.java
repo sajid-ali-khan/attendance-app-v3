@@ -21,7 +21,7 @@ public class RawEmployeeProcessorImpl implements RawEmployeeProcessor {
     public Map<Integer, Faculty> processEmployees(List<Employee> rawEmployees) {
         // fetch existing employees in to a map (id -> faculty)
         Map<Integer, Faculty> existingFaculties = facultyRepository.findAll().stream()
-            .collect(Collectors.toMap(Faculty::getId, Function.identity()));
+            .collect(Collectors.toMap(Faculty::getCode, Function.identity()));
 
         // Map new employees to Faculty if not already present
         List<Faculty> newFaculties = rawEmployees.stream()

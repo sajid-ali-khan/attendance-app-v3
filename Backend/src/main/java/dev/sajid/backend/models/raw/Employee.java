@@ -18,7 +18,7 @@ public class Employee {
     @CsvBindByName(column = "pwd", required = true)
     private String pwd;
 
-    @CsvBindByName(column = "gender", required = true)
+    @CsvBindByName(column = "gender", required = false)
     private String gender;
     
     @CsvBindByName(column = "salu", required = false)
