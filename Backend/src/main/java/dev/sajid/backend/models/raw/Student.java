@@ -21,15 +21,15 @@ public class Student {
     @CsvBindByName(column = "branch", required = true)
     private String branch;
 
-    @CsvBindByName(column = "sec", required = true)
+    @CsvBindByName(column = "section", required = true)
     private String section;
 
-    @CsvBindByName(column = "sem", required = true)
+    @CsvBindByName(column = "semester", required = true)
     private int sem;
 
     @CsvBindByName(column = "scheme", required = true)
     private String scheme;
 
-    @CsvBindByName(column = "degr", required = true)
+    @CsvBindByName(column = "degree", required = true)
     private String degree;
 }
