@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class Subject {
     @Enumerated(EnumType.STRING)
     private SubjectType subjectType;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     private List<ProgramSubject> programSubjects = new ArrayList<>();
 }

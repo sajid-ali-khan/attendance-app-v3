@@ -12,20 +12,18 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-// Renamed to @Service as it's a better fit for a business logic component
 @Service
 public class RawCourseProcessorImpl implements RawCourseProcessor {
 
-    // Final repositories are a good practice with constructor injection
     private final ProgramSubjectRepository programSubjectRepository;
     private final SubjectRepository subjectRepository;
     private final SchemeRepository schemeRepository;
     private final BranchRepository branchRepository;
     private final ProgramRepository programRepository;
 
-    
-    RawCourseProcessorImpl(ProgramRepository programRepository, BranchRepository branchRepository,
-            SchemeRepository schemeRepository, SubjectRepository subjectRepository, ProgramSubjectRepository programSubjectRepository) {
+    public RawCourseProcessorImpl(ProgramRepository programRepository, BranchRepository branchRepository,
+                                  SchemeRepository schemeRepository, SubjectRepository subjectRepository,
+                                  ProgramSubjectRepository programSubjectRepository) {
         this.programRepository = programRepository;
         this.branchRepository = branchRepository;
         this.schemeRepository = schemeRepository;
@@ -33,98 +31,105 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
         this.programSubjectRepository = programSubjectRepository;
     }
 
-    
     @Override
     @Transactional
     public void processRawCourses(List<Course> rawCourses) {
-        // The order of operations is critical
         Map<String, Scheme> schemesMap = findOrCreateSchemes(rawCourses);
         Map<Integer, Branch> branchesMap = findOrCreateBranches(rawCourses);
-        Map<String, Subject> subjectsMap = findOrCreateSubjects(rawCourses);
+        Map<SubjectKey, Subject> subjectsMap = findOrCreateSubjects(rawCourses);
         Map<ProgramKey, Program> programsMap = findOrCreatePrograms(rawCourses, schemesMap, branchesMap);
-        
-        // This is the final step, using all the data we've prepared
+
         createProgramSubjects(rawCourses, schemesMap, branchesMap, programsMap, subjectsMap);
     }
-    
-    // Each of these methods will now follow the "fetch, find new, save all, return map" pattern
+
     @Override
     public Map<String, Scheme> findOrCreateSchemes(List<Course> rawCourses) {
-        // 1. Fetch existing schemes into a map for fast lookup
         Map<String, Scheme> existingSchemes = schemeRepository.findAll().stream()
-                .collect(Collectors.toMap(Scheme::getCode, Function.identity()));
+                .collect(Collectors.toMap(s -> s.getCode().trim().toUpperCase(), Function.identity()));
 
-        // 2. Identify new schemes that are not in the database
         List<Scheme> newSchemes = rawCourses.stream()
                 .map(Course::getScheme)
+                .map(s -> s.trim().toUpperCase())
                 .distinct()
                 .filter(schemeCode -> !existingSchemes.containsKey(schemeCode))
-                .map(schemeCode -> new Scheme(0, schemeCode, 0, null)) // Assuming default year
+                .map(schemeCode -> new Scheme(0, schemeCode, 0, null))
                 .toList();
 
-        // 3. Save all new schemes in a single batch operation
         if (!newSchemes.isEmpty()) {
             schemeRepository.saveAll(newSchemes);
-            // Add the newly saved schemes back to the map
-            newSchemes.forEach(s -> existingSchemes.put(s.getCode(), s));
+            newSchemes.forEach(s -> existingSchemes.put(s.getCode().trim().toUpperCase(), s));
         }
 
         return existingSchemes;
     }
-    
-    // Similar logic for Branches
+
     public Map<Integer, Branch> findOrCreateBranches(List<Course> rawCourses) {
         Map<Integer, Branch> existingBranches = branchRepository.findAll().stream()
                 .collect(Collectors.toMap(Branch::getBranchCode, Function.identity()));
-        
+
         List<Branch> newBranches = rawCourses.stream()
-                .map(c -> c.getBranch().charAt(0))
+                .map(c -> Integer.parseInt(c.getBranch().substring(0, 1)))
                 .distinct()
-                .map(c -> Integer.parseInt(c.toString()))
                 .filter(branchCode -> !existingBranches.containsKey(branchCode))
                 .map(branchCode -> new Branch(0, branchCode,
                         BranchNamer.getBranchShortNameByCode(branchCode),
                         BranchNamer.getBranchFullNameByCode(branchCode)))
                 .toList();
-        
+
         if (!newBranches.isEmpty()) {
             branchRepository.saveAll(newBranches);
             newBranches.forEach(b -> existingBranches.put(b.getBranchCode(), b));
         }
-        
+
         return existingBranches;
     }
 
-    // Similar logic for Subjects
-    public Map<String, Subject> findOrCreateSubjects(List<Course> rawCourses) {
-        Map<String, Subject> existingSubjects = subjectRepository.findAll().stream()
-                .collect(Collectors.toMap(Subject::getShortForm, Function.identity()));
-        
+    public Map<SubjectKey, Subject> findOrCreateSubjects(List<Course> rawCourses) {
+        Map<SubjectKey, Subject> existingSubjects = subjectRepository.findAll().stream()
+                .collect(Collectors.toMap(s -> new SubjectKey(s.getShortForm().trim().toUpperCase(), s.getFullForm().trim().toUpperCase()), Function.identity()));
+
         List<Subject> newSubjects = rawCourses.stream()
-                .map(c -> new Subject(0, c.getSCode(), c.getSubName(),
-                        c.getSCode().endsWith("(P)") ? SubjectType.Lab : SubjectType.Theory, null))
-                .filter(s -> !existingSubjects.containsKey(s.getShortForm()))
-                .distinct() // distinct must be after map for objects
+                .map(rs -> {
+                    return new SubjectKey(rs.getSCode().trim().toUpperCase(), rs.getSubName().trim().toUpperCase());
+                })
+                .distinct()
+                .filter(key -> !existingSubjects.containsKey(key))
+                .map(key -> {
+                    Subject s = new Subject();
+                    s.setShortForm(key.shortForm());
+                    s.setFullForm(key.fullForm());
+                    s.setSubjectType(key.shortForm().endsWith("(P)") ? SubjectType.Lab : SubjectType.Theory);
+                    return s;
+                })
                 .toList();
 
         if (!newSubjects.isEmpty()) {
             subjectRepository.saveAll(newSubjects);
-            newSubjects.forEach(s -> existingSubjects.put(s.getShortForm(), s));
+            newSubjects.forEach(s -> {
+                SubjectKey key = new SubjectKey(s.getShortForm().trim().toUpperCase(), s.getFullForm().trim().toUpperCase());
+                existingSubjects.put(key, s);
+            });
         }
-        
+
         return existingSubjects;
     }
 
     @Override
-    public Map<ProgramKey, Program> findOrCreatePrograms(List<Course> rawCourses, Map<String, Scheme> schemesMap, Map<Integer, Branch> branchesMap) {
+    public Map<ProgramKey, Program> findOrCreatePrograms(List<Course> rawCourses, Map<String, Scheme> schemesMap,
+                                                         Map<Integer, Branch> branchesMap) {
         Map<ProgramKey, Program> existingPrograms = programRepository.findAll().stream()
-                .collect(Collectors.toMap(p -> new ProgramKey(p.getDegree(), p.getScheme().getId(), p.getBranch().getId()), Function.identity()));
-        
+                .collect(Collectors.toMap(
+                        p -> new ProgramKey(p.getDegree(), p.getScheme().getId(), p.getBranch().getId()),
+                        Function.identity()
+                ));
+
         List<Program> newPrograms = rawCourses.stream()
                 .map(c -> {
                     Degree degree = c.getDegree().equalsIgnoreCase("btech") ? Degree.BTech : Degree.MTech;
-                    Scheme scheme = schemesMap.get(c.getScheme());
-                    Branch branch = branchesMap.get(Integer.parseInt(String.valueOf(c.getBranch().charAt(0))));
+                    String schemeCode = c.getScheme().trim().toUpperCase();
+                    Scheme scheme = schemesMap.get(schemeCode);
+                    int branchId = Integer.parseInt(c.getBranch().substring(0, 1));
+                    Branch branch = branchesMap.get(branchId);
                     return new ProgramKey(degree, scheme.getId(), branch.getId());
                 })
                 .distinct()
@@ -145,40 +150,41 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
 
         return existingPrograms;
     }
-    
-    // The final, corrected linking step
+
     @Override
-    public void createProgramSubjects(List<Course> rawCourses, Map<String, Scheme> schemesMap, Map<Integer, Branch> branchesMap, Map<ProgramKey, Program> programsMap, Map<String, Subject> subjectsMap) {
+    public void createProgramSubjects(List<Course> rawCourses, Map<String, Scheme> schemesMap,
+                                      Map<Integer, Branch> branchesMap, Map<ProgramKey, Program> programsMap,
+                                      Map<SubjectKey, Subject> subjectsMap) {
         Set<ProgramSubjectKey> existingLinks = programSubjectRepository.findAll().stream()
-            .map(ps -> new ProgramSubjectKey(ps.getProgram().getId(), ps.getSubject().getId(), ps.getSemester()))
-            .collect(Collectors.toSet());
-        
+                .map(ps -> new ProgramSubjectKey(ps.getProgram().getId(), ps.getSubject().getId(), ps.getSemester()))
+                .collect(Collectors.toSet());
+
         List<ProgramSubject> newLinks = rawCourses.stream()
-            .map(c -> {
-                // Find the parent Program and Subject from the maps we prepared
-                Degree degree = c.getDegree().equalsIgnoreCase("btech") ? Degree.BTech : Degree.MTech;
-                int schemeId = schemesMap.values().stream().filter(s -> s.getCode().equals(c.getScheme())).findFirst().get().getId();
-                int branchId = branchesMap.values().stream().filter(b -> b.getBranchCode() == Integer.parseInt(String.valueOf(c.getBranch().charAt(0)))).findFirst().get().getId();
-                
-                Program program = programsMap.get(new ProgramKey(degree, schemeId, branchId));
-                Subject subject = subjectsMap.get(c.getSCode());
-                
-                // This check is crucial
-                if (program == null || subject == null) return null;
+                .map(c -> {
+                    Degree degree = c.getDegree().equalsIgnoreCase("btech") ? Degree.BTech : Degree.MTech;
+                    String schemeCode = c.getScheme().trim().toUpperCase();
+                    int branchId = Integer.parseInt(c.getBranch().substring(0, 1));
 
-                // Create the new link only if it doesn't already exist
-                ProgramSubjectKey key = new ProgramSubjectKey(program.getId(), subject.getId(), c.getSem());
-                if(existingLinks.contains(key)) return null;
+                    Scheme scheme = schemesMap.get(schemeCode);
+                    Branch branch = branchesMap.get(branchId);
+                    Program program = programsMap.get(new ProgramKey(degree, scheme.getId(), branch.getId()));
+                    SubjectKey subjectKey = new SubjectKey(c.getSCode().trim().toUpperCase(), c.getSubName().trim().toUpperCase());
+                    Subject subject = subjectsMap.get(subjectKey);
 
-                ProgramSubject ps = new ProgramSubject();
-                ps.setProgram(program);
-                ps.setSubject(subject);
-                ps.setSemester(c.getSem());
-                return ps;
-            })
-            .filter(ps -> ps != null) // Filter out nulls from failed lookups or existing links
-            .distinct()
-            .toList();
+                    if (program == null || subject == null) return null;
+
+                    ProgramSubjectKey key = new ProgramSubjectKey(program.getId(), subject.getId(), c.getSem());
+                    if (existingLinks.contains(key)) return null;
+
+                    ProgramSubject ps = new ProgramSubject();
+                    ps.setProgram(program);
+                    ps.setSubject(subject);
+                    ps.setSemester(c.getSem());
+                    return ps;
+                })
+                .filter(ps -> ps != null)
+                .distinct()
+                .toList();
 
         if (!newLinks.isEmpty()) {
             programSubjectRepository.saveAll(newLinks);

@@ -3,6 +3,7 @@ package dev.sajid.backend.models.normalized.derived;
 import dev.sajid.backend.models.normalized.faculty.Faculty;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,11 +17,13 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
@@ -31,6 +34,7 @@ public class Session {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime timeStamp;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
     private List<AttendanceRecord> attendanceRecords;
 }

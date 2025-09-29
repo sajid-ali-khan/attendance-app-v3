@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class Faculty {
     @Column(nullable = false)
     private String passwordHash;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
     private List<CourseAssignment> courseAssignments;
 

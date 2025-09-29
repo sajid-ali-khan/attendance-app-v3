@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class StudentBatch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "program_id", nullable = false)
     private Program program;
@@ -30,9 +32,11 @@ public class StudentBatch {
     @Column(nullable = false)
     private String section;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "studentBatch", fetch = FetchType.LAZY)
     private List<Student> students = new ArrayList<>();
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "studentBatch", fetch = FetchType.LAZY)
     private List<Course> courses = new ArrayList<>();
 }

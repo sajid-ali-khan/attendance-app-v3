@@ -8,13 +8,13 @@ public class BranchNamer {
     static {
         branchName.put(1, new String[]{"CSE", "Computer Science & Engineering"});
         branchName.put(2, new String[]{"CIV", "Civil Engineering"});
-        branchName.put(3, new String[]{"CSE", "Computer Science & Technology"});
-        branchName.put(4, new String[]{"CSE", "Electronics and Communication Engineering"});
-        branchName.put(5, new String[]{"CSE", "Mechanical Engineering"});
-        branchName.put(6, new String[]{"CSE", "Computer Science & Business Systems"});
-        branchName.put(7, new String[]{"CSE", "Electrical and Electronics Engineering"});
-        branchName.put(8, new String[]{"CSE", "Data Science"});
-        branchName.put(9, new String[]{"CSE", "Artificial Intelligence & Machine Learning"});
+        branchName.put(3, new String[]{"CST", "Computer Science & Technology"});
+        branchName.put(4, new String[]{"ECE", "Electronics and Communication Engineering"});
+        branchName.put(5, new String[]{"MEC", "Mechanical Engineering"});
+        branchName.put(6, new String[]{"CSBS", "Computer Science & Business Systems"});
+        branchName.put(7, new String[]{"EEE", "Electrical and Electronics Engineering"});
+        branchName.put(8, new String[]{"CSD", "Data Science"});
+        branchName.put(9, new String[]{"CSM", "Artificial Intelligence & Machine Learning"});
     }
 
     public static String getBranchShortNameByCode(int code){

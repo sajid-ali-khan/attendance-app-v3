@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -24,10 +25,12 @@ public class Student {
     @Column(nullable = false)
     private String name;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_batch_id", nullable = false)
     private StudentBatch studentBatch;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     private List<AttendanceRecord> attendanceRecords;
 }

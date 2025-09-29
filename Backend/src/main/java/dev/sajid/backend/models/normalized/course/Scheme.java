@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ToString(exclude = "programs")
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -25,6 +24,7 @@ public class Scheme {
 
     private int year;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "scheme", fetch = FetchType.LAZY)
     private List<Program> programs = new ArrayList<>();
 }
