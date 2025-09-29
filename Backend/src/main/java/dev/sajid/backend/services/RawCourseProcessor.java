@@ -10,7 +10,6 @@ import dev.sajid.backend.models.normalized.course.Program;
 import dev.sajid.backend.models.normalized.course.Scheme;
 import dev.sajid.backend.models.normalized.course.Subject;
 import dev.sajid.backend.models.raw.Course;
-import dev.sajid.backend.services.RawCourseProcessorImpl.ProgramKey;
 
 @Component
 public interface RawCourseProcessor {

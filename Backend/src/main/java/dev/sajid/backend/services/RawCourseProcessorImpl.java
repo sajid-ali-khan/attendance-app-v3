@@ -23,10 +23,7 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
     private final BranchRepository branchRepository;
     private final ProgramRepository programRepository;
 
-    // Records for creating unique keys for Maps, a great approach!
-    record ProgramKey(Degree degree, int schemeId, int branchId) {}
-    record ProgramSubjectKey(int programId, int subjectId, int semester) {}
-
+    
     RawCourseProcessorImpl(ProgramRepository programRepository, BranchRepository branchRepository,
             SchemeRepository schemeRepository, SubjectRepository subjectRepository, ProgramSubjectRepository programSubjectRepository) {
         this.programRepository = programRepository;
