@@ -15,8 +15,8 @@ import dev.sajid.backend.models.raw.Course;
 public interface RawCourseProcessor {
     void processRawCourses(List<Course> rawCourses);
     Map<String, Scheme> findOrCreateSchemes(List<Course> rawCourses);
-    Map<Integer, Branch> findOrCreateBranches(List<Course> rawCourses);
-    Map<ProgramKey, Program> findOrCreatePrograms(List<Course> rawCourses, Map<String, Scheme> schemesMap, Map<Integer, Branch> branchesMap);// also need scheme, branch repos
+    Map<BranchKey, Branch> findOrCreateBranches(List<Course> rawCourses, Map<String, Scheme> schemesMap);
+    Map<ProgramKey, Program> findOrCreatePrograms(List<Course> rawCourses, Map<String, Scheme> schemesMap, Map<BranchKey, Branch> branchesMap);
     Map<SubjectKey, Subject> findOrCreateSubjects(List<Course> rawCourses);
-    void createProgramSubjects(List<Course> rawCourses, Map<String, Scheme> schemesMap, Map<Integer, Branch> branchesMap, Map<ProgramKey, Program> programsMap, Map<SubjectKey, Subject> subjectsMap);
+    void createProgramSubjects(List<Course> rawCourses, Map<String, Scheme> schemesMap, Map<BranchKey, Branch> branchesMap, Map<ProgramKey, Program> programsMap, Map<SubjectKey, Subject> subjectsMap);
 }

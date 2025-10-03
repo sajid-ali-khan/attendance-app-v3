@@ -1,5 +1,6 @@
 package dev.sajid.backend.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,7 @@ public interface BranchRepository extends JpaRepository<Branch, Integer>{
     int findIdByShortForm(@Param("shortForm") String shortForm);
 
     Optional<Branch> findByBranchCode(int branchCode);
+
+    @Query("select b from Branch b where b.scheme.code = :schemeCode")
+    List<Branch> findByScheme(@Param("schemeCode") String schemeCode);
 }

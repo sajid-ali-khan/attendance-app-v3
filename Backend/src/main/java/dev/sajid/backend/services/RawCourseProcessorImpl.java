@@ -35,7 +35,7 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
     @Transactional
     public void processRawCourses(List<Course> rawCourses) {
         Map<String, Scheme> schemesMap = findOrCreateSchemes(rawCourses);
-        Map<Integer, Branch> branchesMap = findOrCreateBranches(rawCourses);
+        Map<BranchKey, Branch> branchesMap = findOrCreateBranches(rawCourses, schemesMap);
         Map<SubjectKey, Subject> subjectsMap = findOrCreateSubjects(rawCourses);
         Map<ProgramKey, Program> programsMap = findOrCreatePrograms(rawCourses, schemesMap, branchesMap);
 
@@ -63,22 +63,28 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
         return existingSchemes;
     }
 
-    public Map<Integer, Branch> findOrCreateBranches(List<Course> rawCourses) {
-        Map<Integer, Branch> existingBranches = branchRepository.findAll().stream()
-                .collect(Collectors.toMap(Branch::getBranchCode, Function.identity()));
+    public Map<BranchKey, Branch> findOrCreateBranches(List<Course> rawCourses, Map<String, Scheme> schemesMap) {
+        Map<BranchKey, Branch> existingBranches = branchRepository.findAll().stream()
+                .collect(Collectors.toMap(b -> new BranchKey(b.getScheme().getCode(), b.getBranchCode()), Function.identity()));
 
         List<Branch> newBranches = rawCourses.stream()
-                .map(c -> Integer.parseInt(c.getBranch().substring(0, 1)))
+                .map(c -> {
+                    int branchCode =Integer.parseInt(c.getBranch().substring(0, 1));
+                    String schemeCode = c.getScheme().trim().toUpperCase();
+                    return new BranchKey(schemeCode, branchCode);
+                })
                 .distinct()
-                .filter(branchCode -> !existingBranches.containsKey(branchCode))
-                .map(branchCode -> new Branch(0, branchCode,
-                        BranchNamer.getBranchShortNameByCode(branchCode),
-                        BranchNamer.getBranchFullNameByCode(branchCode)))
+                .filter(key -> !existingBranches.containsKey(key))
+                .map(key -> new Branch(0, key.branchCode(),
+                        BranchNamer.getBranchShortNameByCode(key.branchCode()),
+                        BranchNamer.getBranchFullNameByCode(key.branchCode()),
+                        schemesMap.get(key.scheme()), null
+                ))
                 .toList();
 
         if (!newBranches.isEmpty()) {
             branchRepository.saveAll(newBranches);
-            newBranches.forEach(b -> existingBranches.put(b.getBranchCode(), b));
+            newBranches.forEach(b -> existingBranches.put(new BranchKey(b.getScheme().getCode(), b.getBranchCode()), b));
         }
 
         return existingBranches;
@@ -116,10 +122,10 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
 
     @Override
     public Map<ProgramKey, Program> findOrCreatePrograms(List<Course> rawCourses, Map<String, Scheme> schemesMap,
-                                                         Map<Integer, Branch> branchesMap) {
+                                                         Map<BranchKey, Branch> branchesMap) {
         Map<ProgramKey, Program> existingPrograms = programRepository.findAll().stream()
                 .collect(Collectors.toMap(
-                        p -> new ProgramKey(p.getDegree(), p.getScheme().getId(), p.getBranch().getId()),
+                        p -> new ProgramKey(p.getDegree(), p.getScheme().getCode(), p.getBranch().getBranchCode()),
                         Function.identity()
                 ));
 
@@ -127,25 +133,25 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
                 .map(c -> {
                     Degree degree = c.getDegree().equalsIgnoreCase("btech") ? Degree.BTech : Degree.MTech;
                     String schemeCode = c.getScheme().trim().toUpperCase();
-                    Scheme scheme = schemesMap.get(schemeCode);
-                    int branchId = Integer.parseInt(c.getBranch().substring(0, 1));
-                    Branch branch = branchesMap.get(branchId);
-                    return new ProgramKey(degree, scheme.getId(), branch.getId());
+                    int branchCode = Integer.parseInt(c.getBranch().substring(0, 1));
+                    return new ProgramKey(degree, schemeCode, branchCode);
                 })
                 .distinct()
                 .filter(key -> !existingPrograms.containsKey(key))
                 .map(key -> {
                     Program p = new Program();
                     p.setDegree(key.degree());
-                    p.setScheme(schemesMap.values().stream().filter(s -> s.getId() == key.schemeId()).findFirst().get());
-                    p.setBranch(branchesMap.get(key.branchId()));
+                    Scheme scheme = schemesMap.get(key.schemeCode());
+                    Branch branch = branchesMap.get(new BranchKey(key.schemeCode(), key.branchCode()));
+                    p.setScheme(scheme);
+                    p.setBranch(branch);
                     return p;
                 })
                 .toList();
 
         if (!newPrograms.isEmpty()) {
             programRepository.saveAll(newPrograms);
-            newPrograms.forEach(p -> existingPrograms.put(new ProgramKey(p.getDegree(), p.getScheme().getId(), p.getBranch().getId()), p));
+            newPrograms.forEach(p -> existingPrograms.put(new ProgramKey(p.getDegree(), p.getScheme().getCode(), p.getBranch().getBranchCode()), p));
         }
 
         return existingPrograms;
@@ -153,7 +159,7 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
 
     @Override
     public void createProgramSubjects(List<Course> rawCourses, Map<String, Scheme> schemesMap,
-                                      Map<Integer, Branch> branchesMap, Map<ProgramKey, Program> programsMap,
+                                      Map<BranchKey, Branch> branchesMap, Map<ProgramKey, Program> programsMap,
                                       Map<SubjectKey, Subject> subjectsMap) {
         Set<ProgramSubjectKey> existingLinks = programSubjectRepository.findAll().stream()
                 .map(ps -> new ProgramSubjectKey(ps.getProgram().getId(), ps.getSubject().getId(), ps.getSemester()))
@@ -163,11 +169,8 @@ public class RawCourseProcessorImpl implements RawCourseProcessor {
                 .map(c -> {
                     Degree degree = c.getDegree().equalsIgnoreCase("btech") ? Degree.BTech : Degree.MTech;
                     String schemeCode = c.getScheme().trim().toUpperCase();
-                    int branchId = Integer.parseInt(c.getBranch().substring(0, 1));
-
-                    Scheme scheme = schemesMap.get(schemeCode);
-                    Branch branch = branchesMap.get(branchId);
-                    Program program = programsMap.get(new ProgramKey(degree, scheme.getId(), branch.getId()));
+                    int branchCode = Integer.parseInt(c.getBranch().substring(0, 1));
+                    Program program = programsMap.get(new ProgramKey(degree, schemeCode, branchCode));
                     SubjectKey subjectKey = new SubjectKey(c.getSCode().trim().toUpperCase(), c.getSubName().trim().toUpperCase());
                     Subject subject = subjectsMap.get(subjectKey);
 
