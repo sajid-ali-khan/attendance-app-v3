@@ -11,6 +11,8 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +25,7 @@ public class StudentBatch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @JsonIgnore
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id", nullable = false)
@@ -34,10 +37,12 @@ public class StudentBatch {
     @Column(nullable = false)
     private String section;
 
+    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "studentBatch", fetch = FetchType.LAZY)
     private List<Student> students = new ArrayList<>();
 
+    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "studentBatch", fetch = FetchType.LAZY)
     private List<Course> courses = new ArrayList<>();
