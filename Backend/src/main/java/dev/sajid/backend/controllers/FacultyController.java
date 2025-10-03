@@ -9,11 +9,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import dev.sajid.backend.models.normalized.faculty.Faculty;
 import dev.sajid.backend.models.raw.Employee;
+import dev.sajid.backend.repositories.FacultyRepository;
 import dev.sajid.backend.services.CsvProcessingService;
 import dev.sajid.backend.services.RawEmployeeProcessor;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 
 @RestController
@@ -22,10 +26,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class FacultyController {
     final CsvProcessingService csvProcessingService;
     final RawEmployeeProcessor rawEmployeeProcessor;
+    private final FacultyRepository facultyRepository;;
 
-    FacultyController(CsvProcessingService csvProcessingService, RawEmployeeProcessor rawEmployeeProcessor) {
+    FacultyController(CsvProcessingService csvProcessingService, RawEmployeeProcessor rawEmployeeProcessor, FacultyRepository facultyRepository) {
         this.csvProcessingService = csvProcessingService;
         this.rawEmployeeProcessor = rawEmployeeProcessor;
+        this.facultyRepository = facultyRepository;
     }
     
     @PostMapping("/bulkupload")
@@ -38,5 +44,12 @@ public class FacultyController {
             return ResponseEntity.status(500).body("Error processing file: " + e.getMessage());
         }
     }
+
+    @GetMapping("/")
+    public ResponseEntity<List<Faculty>> getAllFaculties() {
+        List<Faculty> faculties = facultyRepository.findAll();
+        return ResponseEntity.ok(faculties);
+    }
+    
     
 }

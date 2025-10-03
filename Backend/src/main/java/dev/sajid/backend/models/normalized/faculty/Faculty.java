@@ -9,6 +9,8 @@ import lombok.ToString;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,12 +25,17 @@ public class Faculty {
     private int code;
 
     private String name;
+
     private String gender;
+
+    @JsonIgnore
     private String salutation;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String passwordHash;
 
+    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
     private List<CourseAssignment> courseAssignments;
