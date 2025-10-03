@@ -11,7 +11,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "course_assignments")
+@Table(name = "course_assignments", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"course_id", "faculty_id"})
+})
 public class CourseAssignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +30,5 @@ public class CourseAssignment {
     @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
 
-    private String role;
+    private String assignedRole;
 }

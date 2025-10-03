@@ -13,7 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "subjects")
+@Table(name = "subjects", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"short_form", "full_form"})
+})
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +33,5 @@ public class Subject {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
-    private List<ProgramSubject> programSubjects = new ArrayList<>();
+    List<BranchSubject> branchSubjects = new ArrayList<>();
 }

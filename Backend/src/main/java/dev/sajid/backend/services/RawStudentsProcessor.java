@@ -7,11 +7,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import dev.sajid.backend.models.normalized.course.Degree;
-import dev.sajid.backend.models.normalized.course.Program;
+import dev.sajid.backend.models.normalized.course.Branch;
 import dev.sajid.backend.models.normalized.student.StudentBatch;
 import dev.sajid.backend.models.raw.Student;
-import dev.sajid.backend.repositories.ProgramRepository;
+import dev.sajid.backend.repositories.BranchRepository;
 import dev.sajid.backend.repositories.StudentBatchRepository;
 import dev.sajid.backend.repositories.StudentRepository;
 import jakarta.transaction.Transactional;
@@ -20,14 +19,13 @@ import jakarta.transaction.Transactional;
 public class RawStudentsProcessor {
 
     private final StudentRepository studentRepository;
-    private final ProgramRepository programRepository;
     private final StudentBatchRepository studentBatchRepository;
+    private final BranchRepository branchRepository;
 
-    public RawStudentsProcessor(StudentRepository studentRepository, ProgramRepository programRepository,
-            StudentBatchRepository studentBatchRepository) {
+    public RawStudentsProcessor(StudentRepository studentRepository, StudentBatchRepository studentBatchRepository, BranchRepository branchRepository) {
         this.studentRepository = studentRepository;
-        this.programRepository = programRepository;
         this.studentBatchRepository = studentBatchRepository;
+        this.branchRepository = branchRepository;
     }
 
     @Transactional
@@ -46,9 +44,10 @@ public class RawStudentsProcessor {
                 .stream()
                 .collect(Collectors.toMap(
                         sb -> new StudentBatchKey(
-                                sb.getProgram().getDegree(),
-                                sb.getProgram().getScheme().getCode().trim().toUpperCase(),
-                                sb.getProgram().getBranch().getBranchCode(),
+                                new BranchKey(
+                                        sb.getBranch().getScheme().getCode().trim().toUpperCase(),
+                                        sb.getBranch().getBranchCode()
+                                ),
                                 sb.getSemester(),
                                 sb.getSection().trim().toUpperCase()
                         ),
@@ -58,21 +57,17 @@ public class RawStudentsProcessor {
         // Identify new batches from CSV
         List<StudentBatch> newBatches = rawStudents.stream()
                 .map(rs -> {
-                    Degree degree = rs.getDegree().startsWith("B") ? Degree.BTech : Degree.MTech;
                     String scheme = rs.getScheme().trim().toUpperCase();
                     int branchCode = Integer.parseInt(rs.getBranch().substring(0, 1));
                     int sem = rs.getSem();
                     String section = rs.getSection().trim().toUpperCase();
-                    return new StudentBatchKey(degree, scheme, branchCode, sem, section);
+                    return new StudentBatchKey(new BranchKey(scheme, branchCode), sem, section);
                 })
                 .filter(key -> !existingBatches.containsKey(key))
                 .map(key -> {
-                    Program program = programRepository
-                            .findBySchemeAndBranch(key.schemeCode(), key.branchCode())
-                            .orElseThrow(() -> new RuntimeException(
-                                    "Program not found for scheme " + key.schemeCode() + " and branch " + key.branchCode()
-                            ));
-                    StudentBatch sb = new StudentBatch(0, program, key.semester(), key.section(), null, null);
+                    Branch branch = branchRepository.findBySchemeAndBranch(key.bkey().schemeCode(), key.bkey().branchCode())
+                            .orElseThrow(() -> new RuntimeException("Branch not found for scheme: " + key.bkey().schemeCode() + " and branch code: " + key.bkey().branchCode()));
+                    StudentBatch sb = new StudentBatch(0, branch, key.semester(), key.section(), null, null);
                     existingBatches.put(key, sb);
                     return sb;
                 })
@@ -98,12 +93,16 @@ public class RawStudentsProcessor {
                 .map(rs -> {
                     String roll = rs.getRoll().trim().toUpperCase();
                     if (existingStudents.containsKey(roll)) return null; // Skip existing
-                    Degree degree = rs.getDegree().startsWith("B") ? Degree.BTech : Degree.MTech;
                     String scheme = rs.getScheme().trim().toUpperCase();
+
                     int branchCode = Integer.parseInt(rs.getBranch().substring(0, 1));
+
                     int sem = rs.getSem();
+
                     String section = rs.getSection().trim().toUpperCase();
-                    StudentBatchKey batchKey = new StudentBatchKey(degree, scheme, branchCode, sem, section);
+                    
+                    StudentBatchKey batchKey = new StudentBatchKey(new BranchKey(scheme, branchCode), sem, section);
+                    
                     StudentBatch studentBatch = studentBatchesMap.get(batchKey);
                     dev.sajid.backend.models.normalized.student.Student s =
                             new dev.sajid.backend.models.normalized.student.Student(0, roll, rs.getName(), studentBatch, null);

@@ -29,7 +29,7 @@ public class Session {
     private Faculty faculty;
 
     private int numPresent;
-    private int numAbsent;
+    private int totalCount;
 
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime timeStamp;

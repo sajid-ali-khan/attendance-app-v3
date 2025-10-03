@@ -7,7 +7,9 @@ import lombok.ToString;
 
 @Data
 @Entity
-@Table(name = "attendance_records")
+@Table(name = "attendance_records", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"session_id", "student_id"})
+})
 public class AttendanceRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

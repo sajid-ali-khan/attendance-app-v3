@@ -1,6 +1,6 @@
 package dev.sajid.backend.models.normalized.student;
 
-import dev.sajid.backend.models.normalized.course.Program;
+import dev.sajid.backend.models.normalized.course.Branch;
 import dev.sajid.backend.models.normalized.derived.Course;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "student_batches")
+@Table(name = "student_batches", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"branch_id", "semester", "section"})
+})
 public class StudentBatch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +25,8 @@ public class StudentBatch {
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "program_id", nullable = false)
-    private Program program;
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 
     @Column(nullable = false)
     private int semester;

@@ -14,16 +14,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "program_subjects")
-public class ProgramSubject {
+@Table(name = "branch_subjects",
+       uniqueConstraints = {@UniqueConstraint(columnNames = {"branch_id", "subject_id", "semester"})})
+public class BranchSubject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "program_id", nullable = false)
-    private Program program;
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,6 +35,6 @@ public class ProgramSubject {
     private int semester;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "programSubject", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "branchSubject", fetch = FetchType.LAZY)
     private List<Course> courses = new ArrayList<>();
 }

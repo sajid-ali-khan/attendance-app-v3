@@ -22,4 +22,7 @@ public interface BranchRepository extends JpaRepository<Branch, Integer>{
 
     @Query("select b from Branch b where b.scheme.code = :schemeCode")
     List<Branch> findByScheme(@Param("schemeCode") String schemeCode);
+
+    @Query("select b from Branch b where b.scheme.code = :schemeCode and b.branchCode = :branchCode")
+    Optional<Branch> findBySchemeAndBranch(@Param("schemeCode") String schemeCode, @Param("branchCode") int branchCode);
 }

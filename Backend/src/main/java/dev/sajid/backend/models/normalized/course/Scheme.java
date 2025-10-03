@@ -21,13 +21,11 @@ public class Scheme {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String code;
-
-    private int year;
 
     @ToString.Exclude
     @JsonIgnore
     @OneToMany(mappedBy = "scheme", fetch = FetchType.LAZY)
-    private List<Program> programs = new ArrayList<>();
+    private List<Branch> branches = new ArrayList<>();
 }
