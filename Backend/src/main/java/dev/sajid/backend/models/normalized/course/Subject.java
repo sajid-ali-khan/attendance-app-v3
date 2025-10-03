@@ -9,6 +9,8 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,6 +33,7 @@ public class Subject {
     @Enumerated(EnumType.STRING)
     private SubjectType subjectType;
 
+    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
     List<BranchSubject> branchSubjects = new ArrayList<>();

@@ -9,4 +9,5 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer>{
     Optional<Subject> findByShortForm(String shortForm);
     boolean existsByShortForm(String shortForm);
 
+    
 }

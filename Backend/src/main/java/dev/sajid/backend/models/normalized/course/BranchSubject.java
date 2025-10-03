@@ -10,6 +10,8 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,11 +23,13 @@ public class BranchSubject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @JsonIgnore
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
 
+    @JsonIgnore
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id", nullable = false)
@@ -34,6 +38,7 @@ public class BranchSubject {
     @Column(nullable = false)
     private int semester;
 
+    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "branchSubject", fetch = FetchType.LAZY)
     private List<Course> courses = new ArrayList<>();
