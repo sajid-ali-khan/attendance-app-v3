@@ -9,6 +9,8 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +27,7 @@ public class Scheme {
     private int year;
 
     @ToString.Exclude
+    @JsonIgnore
     @OneToMany(mappedBy = "scheme", fetch = FetchType.LAZY)
     private List<Program> programs = new ArrayList<>();
 }
