@@ -45,7 +45,7 @@ public class FacultyController {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<Faculty>> getAllFaculties() {
         List<Faculty> faculties = facultyRepository.findAll();
         return ResponseEntity.ok(faculties);

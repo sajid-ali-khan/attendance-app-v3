@@ -120,3 +120,28 @@ truncate table courses [90106-232]
 2025-10-03 22:36:01.771728+05:30 jdbc[13]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "truncate [*]courses"; expected "TABLE"; SQL statement:
 truncate courses [42001-232]
+2025-10-04 16:56:37.250494+05:30 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM branches \000d\000a\000d\000a[*]select * from student_batches sb\000d\000awhere sb.branch_id = 22\000d\000ainner join branches b\000d\000aon b.id = sb.branch_id"; SQL statement:
+SELECT * FROM branches 
+
+select * from student_batches sb
+where sb.branch_id = 22
+inner join branches b
+on b.id = sb.branch_id [42000-232]
+2025-10-04 16:56:40.427864+05:30 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select * from student_batches sb\000d\000awhere sb.branch_id = 22\000d\000a[*]inner join branches b\000d\000aon b.id = sb.branch_id"; SQL statement:
+select * from student_batches sb
+where sb.branch_id = 22
+inner join branches b
+on b.id = sb.branch_id [42000-232]
+2025-10-04 16:56:55.758038+05:30 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM branches \000d\000a\000d\000a[*]select * from student_batches sb\000d\000ainner join branches b\000d\000aon b.id = sb.branch_id\000d\000awhere sb.branch_id = 22"; SQL statement:
+SELECT * FROM branches 
+
+select * from student_batches sb
+inner join branches b
+on b.id = sb.branch_id
+where sb.branch_id = 22 [42000-232]
+2025-10-04 16:58:01.462440+05:30 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]selct * from schemes where id = 3"; expected "SAVEPOINT, SCRIPT, SHUTDOWN"; SQL statement:
+selct * from schemes where id = 3 [42001-232]

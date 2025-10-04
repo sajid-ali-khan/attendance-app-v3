@@ -9,12 +9,14 @@ import dev.sajid.backend.repositories.BranchSubjectRepository;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
 @RequestMapping("/api/branch-subjects")
+@CrossOrigin
 public class BranchSubjectController {
     private final BranchSubjectRepository branchSubjectService;
 
@@ -23,8 +25,8 @@ public class BranchSubjectController {
     }
 
     @GetMapping("/subjects")
-    public ResponseEntity<List<Subject>> getSubjects(@RequestParam("branchCode") String branchCode, @RequestParam("semester") int semester) {
-        List<Subject> subjects = branchSubjectService.findSubjectsByBranchBranchCodeAndSemester(branchCode, semester);
+    public ResponseEntity<List<Subject>> getSubjects(@RequestParam("branchId") int branchId, @RequestParam("semester") int semester) {
+        List<Subject> subjects = branchSubjectService.findSubjectsByBranchIdAndSemester(branchId, semester);
         return ResponseEntity.ok(subjects);
     }
     

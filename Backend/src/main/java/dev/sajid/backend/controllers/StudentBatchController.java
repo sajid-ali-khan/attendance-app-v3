@@ -7,13 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.sajid.backend.repositories.StudentBatchRepository;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
 @RequestMapping("/api/student-batches")
+@CrossOrigin
 public class StudentBatchController {
     private final StudentBatchRepository studentBatchRepository;
 
@@ -21,15 +23,15 @@ public class StudentBatchController {
         this.studentBatchRepository = studentBatchRepository;
     }
 
-    @GetMapping("/branch/{branchCode}/semesters")
-    public ResponseEntity<List<Integer>> getSemestersByBranchCode(@PathVariable("branchCode") String branchCode) {
-        List<Integer> semesters = studentBatchRepository.findSemestersByBranchCode(branchCode);
+    @GetMapping("/semesters")
+    public ResponseEntity<List<Integer>> getSemestersByBranchId(@RequestParam("branchId") int branchId) {
+        List<Integer> semesters = studentBatchRepository.findSemestersByBranchId(branchId);
         return ResponseEntity.ok(semesters);
     }
-    
-    @GetMapping("/branch/{branchCode}/sections")
-    public ResponseEntity<List<String>> getSectionsBySemesterAndBranchCode(@PathVariable("branchCode") String branchCode, @RequestParam("semester") int semester) {
-        List<String> sections = studentBatchRepository.findSectionsByBranchCodeAndSemester(branchCode, semester);
+
+    @GetMapping("/sections")
+    public ResponseEntity<List<String>> getSectionsBySemesterAndBranchId(@RequestParam("branchId") int branchId, @RequestParam("semester") int semester) {
+        List<String> sections = studentBatchRepository.findSectionsByBranchIdAndSemester(branchId, semester);
         return ResponseEntity.ok(sections);
     }
 }

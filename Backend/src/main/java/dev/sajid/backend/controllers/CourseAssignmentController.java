@@ -19,12 +19,14 @@ import dev.sajid.backend.repositories.FacultyRepository;
 import dev.sajid.backend.repositories.StudentBatchRepository;
 import jakarta.transaction.Transactional;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
 @RequestMapping("/api/course-assignments")
+@CrossOrigin
 public class CourseAssignmentController {
     private final CourseRepository courseRepository;
     private final CourseAssignmentRepository courseAssignmentRepository;
@@ -55,7 +57,7 @@ public class CourseAssignmentController {
     }
     
 
-    @PostMapping("/")
+    @PostMapping("")
     @Transactional
     public ResponseEntity<CourseAssignment> createCourseAssignment(@RequestBody ClassAssignmentDto classAssignmentDto) {
         // first create the course object

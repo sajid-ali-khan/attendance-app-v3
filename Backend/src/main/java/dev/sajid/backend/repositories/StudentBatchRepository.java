@@ -10,11 +10,11 @@ import org.springframework.data.repository.query.Param;
 import dev.sajid.backend.models.normalized.student.StudentBatch;
 
 public interface StudentBatchRepository extends JpaRepository<StudentBatch, Integer>{
-    @Query("select distinct sb.semester from StudentBatch sb where sb.branch.branchCode = :branchCode")
-    List<Integer> findSemestersByBranchCode(@Param("branchCode") String branchCode);
+    @Query("select distinct sb.semester from StudentBatch sb where sb.branch.id = :branchId")
+    List<Integer> findSemestersByBranchId(@Param("branchId") int branchId);
 
-    @Query("select distinct sb.section from StudentBatch sb where sb.branch.branchCode = :branchCode and sb.semester = :semester")
-    List<String> findSectionsByBranchCodeAndSemester(@Param("branchCode") String branchCode, @Param("semester") int semester);
+    @Query("select distinct sb.section from StudentBatch sb where sb.branch.id = :branchId and sb.semester = :semester")
+    List<String> findSectionsByBranchIdAndSemester(@Param("branchId") int branchId, @Param("semester") int semester);
 
 
     @Query(value = """
