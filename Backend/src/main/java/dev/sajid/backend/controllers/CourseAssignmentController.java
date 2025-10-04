@@ -1,5 +1,7 @@
 package dev.sajid.backend.controllers;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.sajid.backend.dtos.ClassAssignmentDto;
+import dev.sajid.backend.dtos.ViewAssignmentDto;
 import dev.sajid.backend.models.normalized.course.BranchSubject;
 import dev.sajid.backend.models.normalized.derived.Course;
 import dev.sajid.backend.models.normalized.derived.CourseAssignment;
@@ -17,12 +20,12 @@ import dev.sajid.backend.repositories.CourseAssignmentRepository;
 import dev.sajid.backend.repositories.CourseRepository;
 import dev.sajid.backend.repositories.FacultyRepository;
 import dev.sajid.backend.repositories.StudentBatchRepository;
+import dev.sajid.backend.services.CourseAssignmentService;
 import jakarta.transaction.Transactional;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequestMapping("/api/course-assignments")
@@ -33,29 +36,36 @@ public class CourseAssignmentController {
     private final StudentBatchRepository studentBatchRepository;
     private final BranchSubjectRepository branchSubjectRepository;
     private final FacultyRepository facultyRepository;
+    private final CourseAssignmentService courseAssignmentService;
 
-    CourseAssignmentController(CourseAssignmentRepository courseAssignmentRepository, CourseRepository courseRepository, StudentBatchRepository studentBatchRepository, BranchSubjectRepository branchSubjectRepository, FacultyRepository facultyRepository) {
+    CourseAssignmentController(CourseAssignmentRepository courseAssignmentRepository, CourseRepository courseRepository,
+            StudentBatchRepository studentBatchRepository, BranchSubjectRepository branchSubjectRepository,
+            FacultyRepository facultyRepository, CourseAssignmentService courseAssignmentService) {
         this.courseAssignmentRepository = courseAssignmentRepository;
         this.courseRepository = courseRepository;
         this.studentBatchRepository = studentBatchRepository;
         this.branchSubjectRepository = branchSubjectRepository;
         this.facultyRepository = facultyRepository;
+        this.courseAssignmentService = courseAssignmentService;
     }
 
     @GetMapping("/student_batches")
     public ResponseEntity<StudentBatch> getStudentBatch(@RequestParam("branchId") int branchId,
-    @RequestParam("semester") int semester,
-    @RequestParam("section") String section) {
-        return ResponseEntity.ok(studentBatchRepository.findFirstByBranchIdAndSemesterAndSection(branchId, semester, section).orElseThrow(() -> new RuntimeException("BranchSubject not found")));
+            @RequestParam("semester") int semester,
+            @RequestParam("section") String section) {
+        return ResponseEntity
+                .ok(studentBatchRepository.findFirstByBranchIdAndSemesterAndSection(branchId, semester, section)
+                        .orElseThrow(() -> new RuntimeException("BranchSubject not found")));
     }
 
     @GetMapping("/branch-subjects")
     public ResponseEntity<BranchSubject> getBranchSubjects(@RequestParam("branchId") int branchId,
-    @RequestParam("semester") int semester,
-    @RequestParam("subjectId") int subjectId) {
-        return ResponseEntity.ok(branchSubjectRepository.findFirstByBranchIdAndSubjectIdAndSemester(branchId, subjectId, semester).orElseThrow(() -> new RuntimeException("BranchSubject not found")));
+            @RequestParam("semester") int semester,
+            @RequestParam("subjectId") int subjectId) {
+        return ResponseEntity
+                .ok(branchSubjectRepository.findFirstByBranchIdAndSubjectIdAndSemester(branchId, subjectId, semester)
+                        .orElseThrow(() -> new RuntimeException("BranchSubject not found")));
     }
-    
 
     @PostMapping("")
     @Transactional
@@ -66,23 +76,23 @@ public class CourseAssignmentController {
         StudentBatch studentBatch = studentBatchRepository.findFirstByBranchIdAndSemesterAndSection(
                 classAssignmentDto.branchId(),
                 classAssignmentDto.semester(),
-                classAssignmentDto.section()
-        ).orElseThrow(() -> new RuntimeException("Student batch not found"));
+                classAssignmentDto.section()).orElseThrow(() -> new RuntimeException("Student batch not found"));
         // 2. fetch the branch subject using branchId, semester, subjectId
         BranchSubject branchSubject = branchSubjectRepository.findFirstByBranchIdAndSubjectIdAndSemester(
                 classAssignmentDto.branchId(),
                 classAssignmentDto.subjectId(),
-                classAssignmentDto.semester()
-        ).orElseThrow(() -> new RuntimeException("Branch subject not found"));
+                classAssignmentDto.semester()).orElseThrow(() -> new RuntimeException("Branch subject not found"));
         // 3. check if the course already exists
+        Course course;
         if (courseRepository.existsByStudentBatchIdAndBranchSubjectId(studentBatch.getId(), branchSubject.getId())) {
-            throw new RuntimeException("Course already exists");
+            course = courseRepository
+                    .findByStudentBatchIdAndBranchSubjectId(studentBatch.getId(), branchSubject.getId()).get();
+        } else {
+            course = new Course();
+            course.setStudentBatch(studentBatch);
+            course.setBranchSubject(branchSubject);
+            course = courseRepository.save(course);
         }
-        // 4. create the course object and save it
-        Course course = new Course();
-        course.setStudentBatch(studentBatch);
-        course.setBranchSubject(branchSubject);
-        course = courseRepository.save(course);
         // ------------------------------------------------
         // now create the course assignment object
         // ------------------------------------------------
@@ -94,5 +104,13 @@ public class CourseAssignmentController {
         courseAssignment.setAssignedRole("INSTRUCTOR");
         courseAssignment = courseAssignmentRepository.save(courseAssignment);
         return ResponseEntity.ok(courseAssignment);
+    }
+
+    @GetMapping("/assignments")
+    public ResponseEntity<List<ViewAssignmentDto>> getCourseAssignments(@RequestParam("branchId") int branchId,
+            @RequestParam("semester") int semester,
+            @RequestParam("section") String section) {
+        return ResponseEntity.ok(
+                courseAssignmentService.viewAssignments(branchId, semester, section));
     }
 }

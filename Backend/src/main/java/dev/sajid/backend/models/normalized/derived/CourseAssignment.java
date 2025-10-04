@@ -1,5 +1,7 @@
 package dev.sajid.backend.models.normalized.derived;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import dev.sajid.backend.models.normalized.faculty.Faculty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,12 +21,14 @@ public class CourseAssignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @JsonIgnore
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
 
+    @JsonIgnore
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id", nullable = false)
