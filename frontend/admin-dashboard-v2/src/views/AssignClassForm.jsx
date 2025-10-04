@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { SearchableDropdown } from "../components/shared/SearchableDropdown";
 import { SectionTitle } from "../components/ui/SectionTitle";
 import { SelectInput } from "../components/ui/SelectInput";
-import { MOCK_DATA } from "../constants/data";
 import { Card } from "../components/ui/Card";
 import axios from "axios";
 
