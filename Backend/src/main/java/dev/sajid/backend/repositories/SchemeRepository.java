@@ -1,5 +1,6 @@
 package dev.sajid.backend.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,7 @@ public interface SchemeRepository extends JpaRepository<Scheme, Integer>{
 
     @Query("select s.id from Scheme s where s.code = :code")
     Integer findIdByCode(@Param("code") String code);
+
+    @Query("select s.code from Scheme s")
+    List<String> findAllCodes();
 }

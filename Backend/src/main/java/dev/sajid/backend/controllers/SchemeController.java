@@ -21,8 +21,8 @@ public class SchemeController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Scheme>> getSchemes() {
-        return ResponseEntity.ok(schemeRepository.findAll());
+    public ResponseEntity<List<String>> getSchemes() {
+        return ResponseEntity.ok(schemeRepository.findAllCodes());
     }
     
 }
