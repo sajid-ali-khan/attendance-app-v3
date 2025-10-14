@@ -1,6 +1,4 @@
-// File: src/main/java/dev/sajid/backend/services/CsvProcessingService.java
-
-package dev.sajid.backend.services;
+package dev.sajid.backend.services.csv;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;

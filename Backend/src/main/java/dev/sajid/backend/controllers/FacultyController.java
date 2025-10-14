@@ -2,6 +2,9 @@ package dev.sajid.backend.controllers;
 
 import java.util.List;
 
+import dev.sajid.backend.dtos.ClassDto;
+import dev.sajid.backend.models.normalized.derived.CourseAssignment;
+import dev.sajid.backend.repositories.CourseAssignmentRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import dev.sajid.backend.models.normalized.faculty.Faculty;
 import dev.sajid.backend.models.raw.Employee;
 import dev.sajid.backend.repositories.FacultyRepository;
-import dev.sajid.backend.services.CsvProcessingService;
-import dev.sajid.backend.services.RawEmployeeProcessor;
+import dev.sajid.backend.services.csv.CsvProcessingService;
+import dev.sajid.backend.services.csv.RawEmployeeProcessor;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +53,10 @@ public class FacultyController {
         List<Faculty> faculties = facultyRepository.findAll();
         return ResponseEntity.ok(faculties);
     }
-    
+
+//    @GetMapping("")
+//    public ResponseEntity<List<ClassDto>> getAssignedClasses(){
+//
+//    }
     
 }

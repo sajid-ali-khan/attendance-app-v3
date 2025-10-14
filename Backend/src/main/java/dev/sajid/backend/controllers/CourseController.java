@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import dev.sajid.backend.models.raw.Course;
-import dev.sajid.backend.services.CsvProcessingService;
-import dev.sajid.backend.services.RawCourseProcessor;
+import dev.sajid.backend.services.csv.CsvProcessingService;
+import dev.sajid.backend.services.csv.RawCourseProcessor;
 
 import java.util.List;
 

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import dev.sajid.backend.models.raw.Student;
-import dev.sajid.backend.services.CsvProcessingService;
-import dev.sajid.backend.services.RawStudentsProcessor;
+import dev.sajid.backend.services.csv.CsvProcessingService;
+import dev.sajid.backend.services.csv.RawStudentsProcessor;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;

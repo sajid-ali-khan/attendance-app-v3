@@ -1,4 +1,4 @@
-package dev.sajid.backend.services;
+package dev.sajid.backend.services.csv;
 
 import java.util.List;
 import java.util.Map;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dev.sajid.backend.models.normalized.faculty.Faculty;
+import dev.sajid.backend.models.normalized.faculty.FacultyRole;
 import dev.sajid.backend.models.raw.Employee;
 import dev.sajid.backend.repositories.FacultyRepository;
 
@@ -31,6 +32,7 @@ public class RawEmployeeProcessorImpl implements RawEmployeeProcessor {
                 emp.getEmpId(),
                 emp.getName(),
                 emp.getGender(),
+                FacultyRole.TEACHER, // default role
                 emp.getSalutation(),
                 emp.getPwd(),
                 null // courseAssignments is initialized as null (or empty list)
