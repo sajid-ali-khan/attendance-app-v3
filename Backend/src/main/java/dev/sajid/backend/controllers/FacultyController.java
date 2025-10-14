@@ -5,11 +5,10 @@ import java.util.List;
 import dev.sajid.backend.dtos.ClassDto;
 import dev.sajid.backend.models.normalized.derived.CourseAssignment;
 import dev.sajid.backend.repositories.CourseAssignmentRepository;
+import dev.sajid.backend.services.FacultyService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import dev.sajid.backend.models.normalized.faculty.Faculty;
@@ -17,10 +16,6 @@ import dev.sajid.backend.models.raw.Employee;
 import dev.sajid.backend.repositories.FacultyRepository;
 import dev.sajid.backend.services.csv.CsvProcessingService;
 import dev.sajid.backend.services.csv.RawEmployeeProcessor;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-
 
 
 @RestController
@@ -30,11 +25,13 @@ public class FacultyController {
     final CsvProcessingService csvProcessingService;
     final RawEmployeeProcessor rawEmployeeProcessor;
     private final FacultyRepository facultyRepository;;
+    private final FacultyService facultyService;
 
-    FacultyController(CsvProcessingService csvProcessingService, RawEmployeeProcessor rawEmployeeProcessor, FacultyRepository facultyRepository) {
+    FacultyController(CsvProcessingService csvProcessingService, RawEmployeeProcessor rawEmployeeProcessor, FacultyRepository facultyRepository, FacultyService facultyService) {
         this.csvProcessingService = csvProcessingService;
         this.rawEmployeeProcessor = rawEmployeeProcessor;
         this.facultyRepository = facultyRepository;
+        this.facultyService = facultyService;
     }
     
     @PostMapping("/bulkupload")
@@ -54,9 +51,10 @@ public class FacultyController {
         return ResponseEntity.ok(faculties);
     }
 
-//    @GetMapping("")
-//    public ResponseEntity<List<ClassDto>> getAssignedClasses(){
-//
-//    }
+    @GetMapping("/{facultyId}/classes")
+    public ResponseEntity<List<ClassDto>> getAssignedClasses(@PathVariable int facultyId){
+        List<ClassDto> classes = facultyService.getAssignedClasses(facultyId);
+        return ResponseEntity.ok(classes);
+    }
     
 }
