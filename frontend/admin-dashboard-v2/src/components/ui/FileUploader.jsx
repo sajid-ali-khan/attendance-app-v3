@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosClient from '../../api/axiosClient';
 import React, { useState } from 'react';
 
 // ====================================================================================
@@ -33,7 +33,7 @@ export const FileUploader = ({ api }) => {
         const formData = new FormData();
         formData.append('file', file);
 
-        axios.post(api, formData, {
+        axiosClient.post(api, formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }

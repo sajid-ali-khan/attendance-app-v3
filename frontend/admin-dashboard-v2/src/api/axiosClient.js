@@ -1,7 +1,10 @@
 import axios from "axios";
 
+const token = localStorage.getItem("token");
+
 const axiosClient = axios.create({
-  baseURL: "/api", // ✅ relative URL
+  baseURL: "/api", // ✅ relative URL — Vite proxy will handle the rest
+  headers: token ? { Authorization: `Bearer ${token}` } : {},
 });
 
 axiosClient.interceptors.request.use((config) => {
