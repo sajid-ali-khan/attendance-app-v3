@@ -3,10 +3,8 @@ package dev.sajid.backend.controllers;
 import java.util.List;
 
 import dev.sajid.backend.dtos.ClassDto;
-import dev.sajid.backend.models.normalized.derived.CourseAssignment;
-import dev.sajid.backend.repositories.CourseAssignmentRepository;
 import dev.sajid.backend.services.FacultyService;
-import org.springframework.http.HttpStatus;
+import dev.sajid.backend.services.csv.RawEmployeeProcessor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +13,6 @@ import dev.sajid.backend.models.normalized.faculty.Faculty;
 import dev.sajid.backend.models.raw.Employee;
 import dev.sajid.backend.repositories.FacultyRepository;
 import dev.sajid.backend.services.csv.CsvProcessingService;
-import dev.sajid.backend.services.csv.RawEmployeeProcessor;
 
 
 @RestController
@@ -52,7 +49,7 @@ public class FacultyController {
     }
 
     @GetMapping("/{facultyId}/classes")
-    public ResponseEntity<List<ClassDto>> getAssignedClasses(@PathVariable int facultyId){
+    public ResponseEntity<List<ClassDto>> getAssignedClasses(@PathVariable String facultyId){
         List<ClassDto> classes = facultyService.getAssignedClasses(facultyId);
         return ResponseEntity.ok(classes);
     }

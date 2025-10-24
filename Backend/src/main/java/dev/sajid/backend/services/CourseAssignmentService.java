@@ -20,11 +20,11 @@ public class CourseAssignmentService {
     }
 
     private record AssignmentDto(
-        String subjectCode,
-        String subjectName,
-        String subjectType,
-        Integer facultyCode,
-        String facultyName
+            String subjectCode,
+            String subjectName,
+            String subjectType,
+            String facultyCode,
+            String facultyName
     ){}
 
     private record SubjectDto(

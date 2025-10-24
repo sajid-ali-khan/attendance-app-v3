@@ -8,8 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FacultyRepository extends JpaRepository<Faculty, Integer>{
     @Query("select f.courseAssignments from Faculty f where f.code = :facultyId")
-    List<CourseAssignment> findCourseAssignmentsById(@Param("facultyId") Integer facultyId);
+    List<CourseAssignment> findCourseAssignmentsById(@Param("facultyId") String facultyId);
+
+    @Query("select f from Faculty f where f.code = :username")
+    Optional<Faculty> findByUsername(@Param("username") String username);
 }

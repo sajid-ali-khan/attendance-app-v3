@@ -13,7 +13,7 @@ public class FacultyService {
     @Autowired
     private FacultyRepository facultyRepository;
 
-    public List<ClassDto> getAssignedClasses(int facultyId){
+    public List<ClassDto> getAssignedClasses(String facultyId){
         List<CourseAssignment> courseAssignments = facultyRepository.findCourseAssignmentsById(facultyId);
 
         return courseAssignments.stream()

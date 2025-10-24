@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/schemes")
-@CrossOrigin
 public class SchemeController {
     final SchemeRepository schemeRepository;
 

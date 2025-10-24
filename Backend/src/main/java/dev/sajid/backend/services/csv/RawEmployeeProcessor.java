@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import dev.sajid.backend.models.normalized.faculty.Faculty;
@@ -14,14 +15,16 @@ import dev.sajid.backend.models.raw.Employee;
 import dev.sajid.backend.repositories.FacultyRepository;
 
 @Service
-public class RawEmployeeProcessorImpl implements RawEmployeeProcessor {
+public class RawEmployeeProcessor {
     @Autowired
     FacultyRepository facultyRepository;
 
-    @Override
-    public Map<Integer, Faculty> processEmployees(List<Employee> rawEmployees) {
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
+
+    public Map<String, Faculty> processEmployees(List<Employee> rawEmployees) {
         // fetch existing employees in to a map (id -> faculty)
-        Map<Integer, Faculty> existingFaculties = facultyRepository.findAll().stream()
+        Map<String, Faculty> existingFaculties = facultyRepository.findAll().stream()
             .collect(Collectors.toMap(Faculty::getCode, Function.identity()));
 
         // Map new employees to Faculty if not already present
@@ -34,7 +37,7 @@ public class RawEmployeeProcessorImpl implements RawEmployeeProcessor {
                 emp.getGender(),
                 FacultyRole.TEACHER, // default role
                 emp.getSalutation(),
-                emp.getPwd(),
+                passwordEncoder.encode(emp.getPwd()),
                 null // courseAssignments is initialized as null (or empty list)
             ))
             .collect(Collectors.toList());
@@ -42,7 +45,7 @@ public class RawEmployeeProcessorImpl implements RawEmployeeProcessor {
         if (!newFaculties.isEmpty()) {
             facultyRepository.saveAll(newFaculties);
 
-            newFaculties.forEach(nf -> existingFaculties.put(nf.getId(), nf));
+            newFaculties.forEach(nf -> existingFaculties.put(nf.getCode(), nf));
         }
 
         return existingFaculties;

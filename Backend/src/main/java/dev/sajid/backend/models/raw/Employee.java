@@ -13,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Employee {
     @CsvBindByName(column = "empid", required = true)
-    private int empId;
+    private String empId;
 
     @CsvBindByName(column = "pwd", required = true)
     private String pwd;

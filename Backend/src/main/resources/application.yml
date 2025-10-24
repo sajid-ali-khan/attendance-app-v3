@@ -1,16 +1,27 @@
-spring.application.name=Backend
+spring:
+  application:
+    name: Backend
 
-spring.datasource.url=jdbc:h2:file:./backenddb;DATABASE_TO_UPPER=FALSE
-spring.datasource.driver-class-name=org.h2.Driver
-spring.datasource.username=
-spring.datasource.password=
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+  datasource:
+    url: jdbc:h2:file:./backenddb;DATABASE_TO_UPPER=FALSE
+    driver-class-name: org.h2.Driver
+    username:
+    password:
 
-# this adds quotes to tables names in queries, so that they are literally what we define them to be in database
-spring.jpa.properties.hibernate.globally_quoted_identifiers=true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+  h2:
+    console:
+      enabled: true
 
-
-app.jwt-secret= 'feinjqI95B+Ai0xn4roSPgfnfI/lAvgbTpBqrcSJ+Vw='
-app.jwt-expiration-ms= 1000000000000
+server:
+  port: 8080
+app:
+  jwt-secret: 'feinjqI95B+Ai0xn4roSPgfnfI/lAvgbTpBqrcSJ+Vw='
+  jwt-expiration-ms: 360000

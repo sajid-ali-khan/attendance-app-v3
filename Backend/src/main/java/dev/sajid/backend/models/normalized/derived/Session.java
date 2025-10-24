@@ -31,7 +31,6 @@ public class Session {
     private int numPresent;
     private int totalCount;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime timeStamp;
 
     @ToString.Exclude
