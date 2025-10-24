@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { SectionTitle } from '../components/ui/SectionTitle';
 import { Card } from '../components/ui/Card';
 import { SelectInput } from '../components/ui/SelectInput';
-import axios from "axios";
+import axiosClient from "../api/axiosClient";
 import { DownloadIcon } from '../components/icons';
 
 const ViewAssignments = () => {
@@ -39,7 +39,7 @@ const ViewAssignments = () => {
     };
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/schemes')
+        axiosClient.get('/schemes')
             .then(response => setSchemes(response.data))
             .catch(error => console.log(error));
     }, []);
@@ -49,7 +49,7 @@ const ViewAssignments = () => {
 
         resetSelections(["branch", "semester", "section"]);
 
-        axios.get('http://localhost:8080/api/branches', { params: { scheme: selectedScheme } })
+        axiosClient.get('/branches', { params: { scheme: selectedScheme } })
             .then(response => setBranches(response.data))
             .catch(error => console.error("Error fetching branches:", error));
     }, [selectedScheme]);
@@ -59,7 +59,7 @@ const ViewAssignments = () => {
 
         resetSelections(["semester", "section"]);
 
-        axios.get('http://localhost:8080/api/student-batches/semesters', { params: { branchId: selectedBranchId } })
+        axiosClient.get('/student-batches/semesters', { params: { branchId: selectedBranchId } })
             .then(response => setSemesters(response.data))
             .catch(error => console.error("Error fetching semesters:", error));
     }, [selectedScheme, selectedBranchId]);
@@ -69,7 +69,7 @@ const ViewAssignments = () => {
 
         resetSelections(["section"]);
 
-        axios.get('http://localhost:8080/api/student-batches/sections', { params: { branchId: selectedBranchId, semester: selectedSemester } })
+        axiosClient.get('/student-batches/sections', { params: { branchId: selectedBranchId, semester: selectedSemester } })
             .then(response => setSections(response.data))
             .catch(error => console.error("Error fetching sections:", error));
     }, [selectedScheme, selectedBranchId, selectedSemester]);
@@ -84,7 +84,7 @@ const ViewAssignments = () => {
             return;
         }
 
-        axios.get('http://localhost:8080/api/course-assignments/assignments', {
+        axiosClient.get('/course-assignments/assignments', {
             params: {
                 branchId: selectedBranchId,
                 semester: selectedSemester,

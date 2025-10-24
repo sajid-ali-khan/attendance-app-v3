@@ -10,3 +10,7 @@ spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 
 # this adds quotes to tables names in queries, so that they are literally what we define them to be in database
 spring.jpa.properties.hibernate.globally_quoted_identifiers=true
+
+
+app.jwt-secret= 'feinjqI95B+Ai0xn4roSPgfnfI/lAvgbTpBqrcSJ+Vw='
+app.jwt-expiration-ms= 1000000000000

@@ -6,7 +6,8 @@ import { SearchableDropdown } from "../components/shared/SearchableDropdown";
 import { SectionTitle } from "../components/ui/SectionTitle";
 import { SelectInput } from "../components/ui/SelectInput";
 import { Card } from "../components/ui/Card";
-import axios from "axios";
+import axiosClient from "../api/axiosClient";
+import { useAuth } from "../provider/AuthProvider";
 
 // ====================================================================================
 export const AssignClassForm = () => {
@@ -27,8 +28,10 @@ export const AssignClassForm = () => {
     // State for UI feedback
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const { token } = useAuth();
 
     const resetSelections = (levels = []) => {
+        if (!token) return;
         if (levels.includes("branch")) {
             setSelectedBranchId('');
             setBranches([]);
@@ -51,7 +54,7 @@ export const AssignClassForm = () => {
     useEffect(() => {
         // set initial data(schemes, faculties)
         const fetchInitialData = () => {
-            axios.get('http://localhost:8080/api/schemes')
+            axiosClient.get('/schemes')
                 .then(response => {
                     setSchemes(response.data);
                 })
@@ -59,7 +62,7 @@ export const AssignClassForm = () => {
                     console.error("Error fetching schemes:", error);
                 });
 
-            axios.get('http://localhost:8080/api/faculties')
+            axiosClient.get('/faculties')
                 .then(response => {
                     setFaculties(response.data);
                 })
@@ -75,7 +78,7 @@ export const AssignClassForm = () => {
         if (!selectedScheme) return;
         resetSelections(["branch", "semester", "section", "subject"]);
 
-        axios.get('http://localhost:8080/api/branches', {
+        axiosClient.get('/branches', {
             params: { scheme: selectedScheme }
         })
             .then(response => {
@@ -91,7 +94,7 @@ export const AssignClassForm = () => {
         // Reset the semesters based on branch
         if (!selectedBranchId) return;
         resetSelections(["semester", "section", "subject"]);
-        axios.get(`http://localhost:8080/api/student-batches/semesters`, {
+        axiosClient.get(`/student-batches/semesters`, {
             params: { branchId: selectedBranchId }
         })
             .then(response => {
@@ -107,7 +110,7 @@ export const AssignClassForm = () => {
         // Reset the sections based on semester
         if (!selectedSemester || !selectedBranchId) return;
         resetSelections(["section", "subject"]);
-        axios.get(`http://localhost:8080/api/student-batches/sections`, {
+        axiosClient.get(`/student-batches/sections`, {
             params: { branchId: selectedBranchId, semester: selectedSemester }
         })
             .then(response => {
@@ -124,7 +127,7 @@ export const AssignClassForm = () => {
         if (!selectedSection || !selectedSemester || !selectedBranchId) return;
         resetSelections(["subject"]);
 
-        axios.get('http://localhost:8080/api/branch-subjects/subjects', {
+        axiosClient.get('/branch-subjects/subjects', {
             params: { branchId: selectedBranchId, semester: selectedSemester }
         })
             .then(response => {
@@ -153,8 +156,8 @@ export const AssignClassForm = () => {
             subjectId: selectedSubjectId,
             facultyId: selectedFacultyId
         }
-        console.log("Assigning class:",payload);
-        axios.post('http://localhost:8080/api/course-assignments', payload)
+        // console.log("Assigning class:",payload);
+        axiosClient.post('/course-assignments', payload)
             .then(response => {
                 setSuccessMessage("Class has been assigned successfully!");
                 // Optionally reset form fields after success
