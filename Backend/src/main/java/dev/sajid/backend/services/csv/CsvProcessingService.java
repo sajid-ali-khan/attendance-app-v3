@@ -23,7 +23,7 @@ public class CsvProcessingService {
      * @return A list of objects of type T.
      * @throws CsvValidationException if the file is invalid.
      */
-    public <T> List<T> process(MultipartFile file, Class<T> clazz) {
+    public <T> List<T> process(MultipartFile file, Class<T> clazz){
         if (file.isEmpty()) {
             throw new CsvValidationException("The uploaded file is empty.");
         }

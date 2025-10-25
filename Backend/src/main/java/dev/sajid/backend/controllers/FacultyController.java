@@ -1,10 +1,12 @@
 package dev.sajid.backend.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import dev.sajid.backend.dtos.ClassDto;
 import dev.sajid.backend.services.FacultyService;
 import dev.sajid.backend.services.csv.RawEmployeeProcessor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +17,7 @@ import dev.sajid.backend.repositories.FacultyRepository;
 import dev.sajid.backend.services.csv.CsvProcessingService;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/api/faculties")
 @CrossOrigin
@@ -32,14 +35,13 @@ public class FacultyController {
     }
     
     @PostMapping("/bulkupload")
-    public ResponseEntity<String> bulkUploadFaculties(@RequestParam MultipartFile file) {
-        try{
-            List<Employee> rawEmployees = csvProcessingService.process(file, Employee.class);
-            rawEmployeeProcessor.processEmployees(rawEmployees);
-            return ResponseEntity.ok("Faculty data uploaded successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error processing file: " + e.getMessage());
-        }
+    public ResponseEntity<?> bulkUploadFaculties(@RequestParam MultipartFile file) {
+        List<Employee> rawEmployees = csvProcessingService.process(file, Employee.class);
+        rawEmployeeProcessor.processEmployees(rawEmployees);
+        return ResponseEntity.ok()
+                .body(Map.of(
+                        "message", "Faculties uploaded successfully."
+                ));
     }
 
     @GetMapping("")

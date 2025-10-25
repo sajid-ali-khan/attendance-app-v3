@@ -16,4 +16,6 @@ public interface FacultyRepository extends JpaRepository<Faculty, Integer>{
 
     @Query("select f from Faculty f where f.code = :username")
     Optional<Faculty> findByUsername(@Param("username") String username);
+
+    boolean existsByCode(String facultyCode);
 }

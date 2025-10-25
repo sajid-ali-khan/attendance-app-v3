@@ -1,6 +1,7 @@
 package dev.sajid.backend.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +28,12 @@ public class StudentController {
     RawStudentsProcessor rawStudentsProcessor;
 
     @PostMapping("/bulkupload")
-    public ResponseEntity<String> bulkUploadStudents(@RequestParam MultipartFile file) {
-        try {
-            List<Student> rawStudents = csvProcessingService.process(file, Student.class);
-            rawStudentsProcessor.process(rawStudents);
-            return ResponseEntity.ok("Students uploaded successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error processing file: " + e.getMessage());
-        }
+    public ResponseEntity<?> bulkUploadStudents(@RequestParam MultipartFile file) {
+        List<Student> rawStudents = csvProcessingService.process(file, Student.class);
+        rawStudentsProcessor.process(rawStudents);
+        return ResponseEntity.ok().body(Map.of(
+                "message", "Students uploaded successfully."
+        ));
     }
     
 }

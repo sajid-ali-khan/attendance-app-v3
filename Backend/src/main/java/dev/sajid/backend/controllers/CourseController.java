@@ -1,5 +1,6 @@
 package dev.sajid.backend.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,7 @@ import dev.sajid.backend.services.csv.CsvProcessingService;
 import dev.sajid.backend.services.csv.RawCourseProcessor;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/api/courses")
 @CrossOrigin
@@ -29,16 +32,12 @@ public class CourseController {
 
 
     @PostMapping("/bulkupload")
-    public ResponseEntity<Void> courseBulkUpload(@RequestParam("file") MultipartFile file) {
-        
-        try {
-            List<Course> rawCourses =csvProcessingService.process(file, Course.class);
-            rawCourseProcessor.processRawCourses(rawCourses);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).build();
-        }
+    public ResponseEntity<?> courseBulkUpload(@RequestParam("file") MultipartFile file) {
+        List<Course> rawCourses =csvProcessingService.process(file, Course.class);
+        rawCourseProcessor.processRawCourses(rawCourses);
+        return ResponseEntity.ok().body(Map.of(
+                "message", "Courses uploaded successfully"
+        ));
     }
     
 }

@@ -5,9 +5,11 @@ import dev.sajid.backend.dtos.LoginRequest;
 import dev.sajid.backend.services.AuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -20,12 +22,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest){
-        Optional<JwtResponse> jwtResponse = authService.loginUser(loginRequest);
-
-        if (jwtResponse.isEmpty()){
-            log.debug("Login failed for login request: {}", loginRequest.getUsername());
-            return ResponseEntity.status(403).build();
-        }
+        Optional<JwtResponse> jwtResponse;
+        jwtResponse = authService.loginUser(loginRequest);
         log.info("User {} logged in.", loginRequest.getUsername());
         return ResponseEntity.ok(jwtResponse.get());
     }

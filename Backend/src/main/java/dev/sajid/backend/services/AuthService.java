@@ -24,9 +24,6 @@ public class AuthService {
     FacultyRepository facultyRepository;
 
     @Autowired
-    BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
     JwtUtils jwtUtils;
 
     @Autowired
