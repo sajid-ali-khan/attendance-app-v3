@@ -37,7 +37,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of(
                         "success", false,
-                        "message", "Something went wrong"
+                        "message", "Something went wrong",
+                        "exceptionMessage", ex.getMessage()
                 ));
     }
 }

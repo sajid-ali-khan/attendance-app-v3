@@ -1,5 +1,6 @@
 package dev.sajid.backend.controllers;
 
+import dev.sajid.backend.services.csv.RawCourseProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -8,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import dev.sajid.backend.models.raw.Course;
 import dev.sajid.backend.services.csv.CsvProcessingService;
-import dev.sajid.backend.services.csv.RawCourseProcessor;
 
 import java.util.List;
 import java.util.Map;

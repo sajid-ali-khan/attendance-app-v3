@@ -678,3 +678,8 @@
 2025-10-25T12:08:34.236+05:30  INFO 17686 --- [Backend] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
 2025-10-25T12:08:34.240+05:30  INFO 17686 --- [Backend] [restartedMain] dev.sajid.backend.BackendApplication     : Started BackendApplication in 1.562 seconds (process running for 955.455)
 2025-10-25T12:08:34.242+05:30  INFO 17686 --- [Backend] [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2025-10-25T12:17:10.307+05:30  INFO 17686 --- [Backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-10-25T12:17:10.308+05:30  INFO 17686 --- [Backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-10-25T12:17:10.312+05:30  INFO 17686 --- [Backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-25T12:17:10.313+05:30  INFO 17686 --- [Backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Shutdown initiated...
+2025-10-25T12:17:10.313+05:30  INFO 17686 --- [Backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Shutdown completed.
