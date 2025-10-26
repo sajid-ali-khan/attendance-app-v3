@@ -99,7 +99,7 @@ public class CourseAssignmentService {
                         assignment.getFaculty().getCode(),
                         assignment.getFaculty().getName()
                 ))
-                .collect(Collectors.toList());
+                .toList();
         
         Map<SubjectDto, List<FacultyDto>> subjectFacultyMap = new HashMap<>();
 

@@ -22,7 +22,7 @@ public class RawEmployeeProcessor {
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
 
-    public Map<String, Faculty> processEmployees(List<Employee> rawEmployees) {
+    public void processEmployees(List<Employee> rawEmployees) {
         // fetch existing employees in to a map (id -> faculty)
         Map<String, Faculty> existingFaculties = facultyRepository.findAll().stream()
             .collect(Collectors.toMap(Faculty::getCode, Function.identity()));
@@ -48,7 +48,6 @@ public class RawEmployeeProcessor {
             newFaculties.forEach(nf -> existingFaculties.put(nf.getCode(), nf));
         }
 
-        return existingFaculties;
     }
 
 }

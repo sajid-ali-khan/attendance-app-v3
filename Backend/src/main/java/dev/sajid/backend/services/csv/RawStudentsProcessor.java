@@ -2,6 +2,7 @@ package dev.sajid.backend.services.csv;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -111,7 +112,7 @@ public class RawStudentsProcessor {
                     existingStudents.put(roll, s); // mark as existing
                     return s;
                 })
-                .filter(s -> s != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         if (!newStudents.isEmpty()) {
