@@ -1,7 +1,7 @@
 package dev.sajid.backend.config;
 
 import dev.sajid.backend.jwt.AuthTokenFilter;
-import dev.sajid.backend.services.FacultyDetailsService;
+import dev.sajid.backend.services.auth.FacultyDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

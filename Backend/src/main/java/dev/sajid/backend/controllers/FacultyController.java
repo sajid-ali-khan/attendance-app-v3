@@ -2,12 +2,14 @@ package dev.sajid.backend.controllers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import dev.sajid.backend.dtos.ClassDto;
+import dev.sajid.backend.dtos.AssignedClassDto;
 import dev.sajid.backend.services.FacultyService;
 import dev.sajid.backend.services.csv.RawEmployeeProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +26,7 @@ import dev.sajid.backend.services.csv.CsvProcessingService;
 public class FacultyController {
     final CsvProcessingService csvProcessingService;
     final RawEmployeeProcessor rawEmployeeProcessor;
-    private final FacultyRepository facultyRepository;;
+    private final FacultyRepository facultyRepository;
     private final FacultyService facultyService;
 
     FacultyController(CsvProcessingService csvProcessingService, RawEmployeeProcessor rawEmployeeProcessor, FacultyRepository facultyRepository, FacultyService facultyService) {
@@ -44,6 +46,17 @@ public class FacultyController {
                 ));
     }
 
+    @GetMapping("/{facultyCode}/name")
+    public ResponseEntity<?> getFacultyName(@PathVariable String facultyCode){
+        Optional<Faculty> faculty = facultyRepository.findByUsername(facultyCode);
+        if (faculty.isPresent()) return ResponseEntity.ok().body(Map.of(
+                "name", faculty.get().getSalutation() + faculty.get().getName()
+        ));
+        else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("")
     public ResponseEntity<List<Faculty>> getAllFaculties() {
         List<Faculty> faculties = facultyRepository.findAll();
@@ -51,8 +64,14 @@ public class FacultyController {
     }
 
     @GetMapping("/{facultyId}/classes")
-    public ResponseEntity<List<ClassDto>> getAssignedClasses(@PathVariable String facultyId){
-        List<ClassDto> classes = facultyService.getAssignedClasses(facultyId);
+    public ResponseEntity<?> getAssignedClasses(@PathVariable String facultyId){
+        if (!facultyRepository.existsByCode(facultyId))
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "A faculty with facultyCode: " + facultyId + " does not exist."
+            ));
+
+        List<AssignedClassDto> classes = facultyService.getAssignedClasses(facultyId);
         return ResponseEntity.ok(classes);
     }
     

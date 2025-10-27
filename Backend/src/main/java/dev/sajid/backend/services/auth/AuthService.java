@@ -1,4 +1,4 @@
-package dev.sajid.backend.services;
+package dev.sajid.backend.services.auth;
 
 import dev.sajid.backend.dtos.JwtResponse;
 import dev.sajid.backend.dtos.LoginRequest;

@@ -1,4 +1,4 @@
-package dev.sajid.backend.services;
+package dev.sajid.backend.services.auth;
 
 import dev.sajid.backend.models.normalized.faculty.Faculty;
 import dev.sajid.backend.repositories.FacultyRepository;
