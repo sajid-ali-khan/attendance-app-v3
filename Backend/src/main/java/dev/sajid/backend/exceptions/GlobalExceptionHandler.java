@@ -41,4 +41,13 @@ public class GlobalExceptionHandler {
                         "exceptionMessage", ex.getMessage()
                 ));
     }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleSessionNotFoundException(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of(
+                        "success", false,
+                        "message", ex.getMessage()
+                ));
+    }
+
 }

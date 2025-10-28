@@ -37,6 +37,6 @@ public class Session {
     private LocalDateTime timeStamp = LocalDateTime.now();
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "session", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<AttendanceRecord> attendanceRecords = new ArrayList<>();
 }

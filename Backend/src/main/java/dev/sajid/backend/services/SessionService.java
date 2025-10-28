@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SessionService {
@@ -34,15 +35,15 @@ public class SessionService {
     @Autowired
     private AttendanceRecordRepository attendanceRecordRepository;
 
-    public List<SessionDto> getSessionsByCourseIdAndDate(int courseId, LocalDate date) {
+    public Map<Integer, SessionDto> getSessionsByCourseIdAndDate(int courseId, LocalDate date) {
         List<Session> sessions = sessionReporitory.findByCourse_IdAndTimeStampBetween(courseId, date.atStartOfDay(), date.plusDays(1).atStartOfDay());
 
         return sessions.stream()
-                .map(s -> {
-                    return new SessionDto(s.getId(), s.getSessionName(), s.getTimeStamp());
-                })
-                .distinct()
-                .toList();
+                .collect(Collectors.toMap(
+                        Session::getId, // key mapper
+                        s -> new SessionDto(s.getId(), s.getSessionName(), s.getTimeStamp()),
+                        (existing, replacement) -> existing // handle duplicate keys (if any)
+                ));
     }
 
     public SessionDto createNewSession(int courseId, String facultyCode) {
@@ -80,6 +81,7 @@ public class SessionService {
 
     public void updateSession(SessionRegisterDto sessionRegisterDto){
         Session actualSession = sessionReporitory.findById(sessionRegisterDto.sessionId()).get();
+        actualSession.setSessionName(sessionRegisterDto.sessionName());
         actualSession.setNumPresent(sessionRegisterDto.presentCount());
         updateAttendanceRecords(actualSession, sessionRegisterDto.attendanceRowMap());
     }
@@ -108,5 +110,9 @@ public class SessionService {
         session.setAttendanceRecords(attendanceRecords);
         session.setTotalCount(attendanceRecords.size());
         sessionReporitory.save(session);
+    }
+
+    public void deleteSession(int sessionId) {
+        sessionReporitory.deleteById(sessionId);
     }
 }
