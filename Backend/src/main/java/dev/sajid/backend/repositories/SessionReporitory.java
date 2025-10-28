@@ -1,8 +1,14 @@
 package dev.sajid.backend.repositories;
 
+import dev.sajid.backend.dtos.SessionRegisterDto;
 import dev.sajid.backend.models.normalized.derived.Session;
+import dev.sajid.backend.models.normalized.student.Student;
+import dev.sajid.backend.models.normalized.student.StudentBatch;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import java.time.LocalDateTime;
 import java.util.List;
 

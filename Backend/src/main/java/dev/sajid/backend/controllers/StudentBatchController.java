@@ -24,13 +24,18 @@ public class StudentBatchController {
     }
 
     @GetMapping("/semesters")
-    public ResponseEntity<List<Integer>> getSemestersByBranchId(@RequestParam("branchId") int branchId) {
+    public ResponseEntity<List<Integer>> getSemestersByBranchId(
+            @RequestParam("branchId") int branchId
+    ) {
         List<Integer> semesters = studentBatchRepository.findSemestersByBranchId(branchId);
         return ResponseEntity.ok(semesters);
     }
 
     @GetMapping("/sections")
-    public ResponseEntity<List<String>> getSectionsBySemesterAndBranchId(@RequestParam("branchId") int branchId, @RequestParam("semester") int semester) {
+    public ResponseEntity<List<String>> getSectionsBySemesterAndBranchId(
+            @RequestParam("branchId") int branchId,
+            @RequestParam("semester") int semester
+    ) {
         List<String> sections = studentBatchRepository.findSectionsByBranchIdAndSemester(branchId, semester);
         return ResponseEntity.ok(sections);
     }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -16,6 +17,8 @@ public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    private String sessionName = "Untitled";
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,9 +34,9 @@ public class Session {
     private int numPresent;
     private int totalCount;
 
-    private LocalDateTime timeStamp;
+    private LocalDateTime timeStamp = LocalDateTime.now();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
-    private List<AttendanceRecord> attendanceRecords;
+    private List<AttendanceRecord> attendanceRecords = new ArrayList<>();
 }

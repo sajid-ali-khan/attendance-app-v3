@@ -1,38 +1,112 @@
 package dev.sajid.backend.services;
 
-import dev.sajid.backend.dtos.ClassDto;
+import dev.sajid.backend.dtos.AttendanceRecordDto;
 import dev.sajid.backend.dtos.SessionDto;
+import dev.sajid.backend.dtos.SessionRegisterDto;
+import dev.sajid.backend.models.normalized.derived.AttendanceRecord;
 import dev.sajid.backend.models.normalized.derived.Session;
+import dev.sajid.backend.models.normalized.student.Student;
+import dev.sajid.backend.repositories.AttendanceRecordRepository;
+import dev.sajid.backend.repositories.CourseRepository;
+import dev.sajid.backend.repositories.FacultyRepository;
 import dev.sajid.backend.repositories.SessionReporitory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SessionService {
     @Autowired
     private SessionReporitory sessionReporitory;
-    public List<SessionDto> getSessionsByCourseIdAndDate(int courseId, LocalDate date){
+
+    @Autowired
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private FacultyRepository facultyRepository;
+
+    @Autowired
+    private AttendanceRecordRepository attendanceRecordRepository;
+
+    public List<SessionDto> getSessionsByCourseIdAndDate(int courseId, LocalDate date) {
         List<Session> sessions = sessionReporitory.findByCourse_IdAndTimeStampBetween(courseId, date.atStartOfDay(), date.plusDays(1).atStartOfDay());
 
         return sessions.stream()
                 .map(s -> {
-                        String subjectName = s.getCourse().getBranchSubject().getSubject().getFullForm();
-                        String subjectCode = s.getCourse().getBranchSubject().getSubject().getShortForm();
-                        String subject = subjectCode + " - " + subjectName;
-
-                        String branchName = s.getCourse().getBranchSubject().getBranch().getShortForm();
-                        int semester = s.getCourse().getStudentBatch().getSemester();
-                        String section = s.getCourse().getStudentBatch().getSection();
-                    LocalDateTime createdAt = s.getTimeStamp();
-
-                    ClassDto classDto = new ClassDto(subject, branchName, semester, section);
-                    return new SessionDto(classDto, createdAt);
+                    return new SessionDto(s.getId(), s.getSessionName(), s.getTimeStamp());
                 })
                 .distinct()
                 .toList();
+    }
+
+    public SessionDto createNewSession(int courseId, String facultyCode) {
+        Session newSession = new Session();
+        newSession.setCourse(courseRepository.findById(courseId).get());
+        newSession.setFaculty(facultyRepository.findByUsername(facultyCode).get());
+        sessionReporitory.save(newSession);
+        createAndAddAttendanceRecords(newSession);
+        return new SessionDto(newSession.getId(), newSession.getSessionName(), newSession.getTimeStamp());
+    }
+
+    public SessionRegisterDto getSessionRegister(int sessionId) {
+        Session session = sessionReporitory.findById(sessionId).get();
+
+        Map<Integer, AttendanceRecordDto> studentAttendanceRowMap = new HashMap<>();
+
+        for (AttendanceRecord attendanceRecord : session.getAttendanceRecords()) {
+            studentAttendanceRowMap.put(attendanceRecord.getId(), new AttendanceRecordDto(
+                    attendanceRecord.getId(),
+                    attendanceRecord.getStudent().getRoll(),
+                    attendanceRecord.getStudent().getName(),
+                    attendanceRecord.isStatus())
+            );
+        }
+
+        return new SessionRegisterDto(
+                sessionId,
+                session.getSessionName(),
+                session.getNumPresent(),
+                session.getTotalCount(),
+                session.getTimeStamp(),
+                studentAttendanceRowMap
+        );
+    }
+
+    public void updateSession(SessionRegisterDto sessionRegisterDto){
+        Session actualSession = sessionReporitory.findById(sessionRegisterDto.sessionId()).get();
+        actualSession.setNumPresent(sessionRegisterDto.presentCount());
+        updateAttendanceRecords(actualSession, sessionRegisterDto.attendanceRowMap());
+    }
+
+    private void updateAttendanceRecords(Session session, Map<Integer, AttendanceRecordDto> attendanceRecordDtoMap){
+        List<AttendanceRecord> attendanceRecords = session.getAttendanceRecords();
+        for (AttendanceRecord attendanceRecord: attendanceRecords){
+            attendanceRecord.setStatus(attendanceRecordDtoMap.get(attendanceRecord.getId()).status());
+        }
+        attendanceRecordRepository.saveAll(attendanceRecords);
+        session.getAttendanceRecords().clear();
+        session.setAttendanceRecords(attendanceRecords);
+        session.setTimeStamp(LocalDateTime.now());
+        sessionReporitory.save(session);
+    }
+
+    private void createAndAddAttendanceRecords(Session session){
+        List<AttendanceRecord> attendanceRecords = new ArrayList<>();
+        List<Student> students = courseRepository.findStudentListById(session.getCourse().getId());
+
+        for (Student student: students){
+            attendanceRecords.add(new AttendanceRecord(0, session, student, false));
+        }
+
+        attendanceRecordRepository.saveAll(attendanceRecords);
+        session.setAttendanceRecords(attendanceRecords);
+        session.setTotalCount(attendanceRecords.size());
+        sessionReporitory.save(session);
     }
 }

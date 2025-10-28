@@ -2,7 +2,9 @@ package dev.sajid.backend.models.normalized.derived;
 
 import dev.sajid.backend.models.normalized.student.Student;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
@@ -10,6 +12,8 @@ import lombok.ToString;
 @Table(name = "attendance_records", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"session_id", "student_id"})
 })
+@AllArgsConstructor
+@NoArgsConstructor
 public class AttendanceRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

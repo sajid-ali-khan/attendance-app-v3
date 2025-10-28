@@ -31,4 +31,4 @@ logging:
     name: logs/app.log
 app:
   jwt-secret: 'feinjqI95B+Ai0xn4roSPgfnfI/lAvgbTpBqrcSJ+Vw='
-  jwt-expiration-ms: 360000
+  jwt-expiration-ms: 36000000
