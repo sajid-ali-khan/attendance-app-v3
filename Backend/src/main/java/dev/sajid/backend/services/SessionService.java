@@ -92,8 +92,7 @@ public class SessionService {
             attendanceRecord.setStatus(attendanceRecordDtoMap.get(attendanceRecord.getId()).status());
         }
         attendanceRecordRepository.saveAll(attendanceRecords);
-        session.getAttendanceRecords().clear();
-        session.setAttendanceRecords(attendanceRecords);
+
         session.setTimeStamp(LocalDateTime.now());
         sessionReporitory.save(session);
     }
