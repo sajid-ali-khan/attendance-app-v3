@@ -4,7 +4,6 @@ import java.util.List;
 
 import dev.sajid.backend.exceptions.ResourceNotFoundException;
 import dev.sajid.backend.services.AttendanceService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +46,6 @@ public class StudentBatchController {
         if (!studentBatchRepository.existsById(studentBatchId)){
             throw new ResourceNotFoundException("A student batch not found with ID: " + studentBatchId);
         }
-        return ResponseEntity.ok(attendanceService.calculateAttendanceForStudentBatch(studentBatchId));
+        return ResponseEntity.ok(attendanceService.calculateFullAttendanceForStudentBatch(studentBatchId));
     }
 }

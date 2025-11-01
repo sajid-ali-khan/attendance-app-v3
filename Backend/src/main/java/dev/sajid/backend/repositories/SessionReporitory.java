@@ -15,4 +15,6 @@ import java.util.List;
 @Repository
 public interface SessionReporitory extends JpaRepository<Session, Integer> {
     List<Session> findByCourse_IdAndTimeStampBetween(int courseId, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Session> findByCourse_Id(int courseId);
 }

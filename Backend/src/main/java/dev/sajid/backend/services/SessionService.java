@@ -50,6 +50,7 @@ public class SessionService {
         Session newSession = new Session();
         newSession.setCourse(courseRepository.findById(courseId).get());
         newSession.setFaculty(facultyRepository.findByUsername(facultyCode).get());
+        newSession.setTimeStamp(LocalDateTime.now());
         sessionReporitory.save(newSession);
         createAndAddAttendanceRecords(newSession);
         return new SessionDto(newSession.getId(), newSession.getSessionName(), newSession.getTimeStamp());
@@ -83,6 +84,7 @@ public class SessionService {
         Session actualSession = sessionReporitory.findById(sessionRegisterDto.sessionId()).get();
         actualSession.setSessionName(sessionRegisterDto.sessionName());
         actualSession.setNumPresent(sessionRegisterDto.presentCount());
+        actualSession.setTimeStamp(LocalDateTime.now());
         updateAttendanceRecords(actualSession, sessionRegisterDto.attendanceRowMap());
     }
 
@@ -92,8 +94,6 @@ public class SessionService {
             attendanceRecord.setStatus(attendanceRecordDtoMap.get(attendanceRecord.getId()).status());
         }
         attendanceRecordRepository.saveAll(attendanceRecords);
-
-        session.setTimeStamp(LocalDateTime.now());
         sessionReporitory.save(session);
     }
 

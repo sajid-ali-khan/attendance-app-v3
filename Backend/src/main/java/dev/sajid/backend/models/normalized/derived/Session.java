@@ -34,9 +34,23 @@ public class Session {
     private int numPresent;
     private int totalCount;
 
+    @Column(nullable = false)
     private LocalDateTime timeStamp = LocalDateTime.now();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "session", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<AttendanceRecord> attendanceRecords = new ArrayList<>();
+
+    @PrePersist
+    public void onCreate() {
+        if (timeStamp == null) {
+            timeStamp = LocalDateTime.now();
+        }
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        timeStamp = LocalDateTime.now();
+    }
+
 }

@@ -18,33 +18,11 @@ public class FacultyService {
 
         return courseAssignments.stream()
                 .map(ca -> {
-                    String subjectFullName = ca.getCourse().getBranchSubject().getSubject().getFullForm();
-                    String subjectCode = ca.getCourse().getBranchSubject().getSubject().getShortForm();
-
-                    String subjectName = subjectCode + " - " + subjectFullName;
-
-                    String branchName = ca.getCourse().getBranchSubject().getBranch().getShortForm();
-                    int semester = ca.getCourse().getStudentBatch().getSemester();
-                    String section = ca.getCourse().getStudentBatch().getSection();
-
-                    String className = String.format(
-                            "%s Sem %s - %s",
-                            formatedSemester(semester),
-                            branchName,
-                            section
-                    );
+                    String className = ClassNamingService.formClassName(ca.getCourse());
+                    String subjectName = ClassNamingService.formSubjectName(ca.getCourse());
                     return new AssignedClassDto(ca.getCourse().getId(), className, subjectName);
                 })
                 .distinct()
                 .toList();
-    }
-
-    public String formatedSemester(int sem){
-        return sem + switch(sem) {
-            case 1 -> "st";
-            case 2 -> "nd";
-            case 3 -> "rd";
-            default -> "th";
-        };
     }
 }
