@@ -25,26 +25,23 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("/api/courses")
 @CrossOrigin
 public class CourseController {
-    @Autowired
-    CsvProcessingService csvProcessingService;
+    private final CsvProcessingService csvProcessingService;
+    private final RawCourseProcessor rawCourseProcessor;
+    private final CourseRepository courseRepository;
+    private final AttendanceService attendanceService;
+    private final CourseService courseService;
 
-    @Autowired
-    RawCourseProcessor rawCourseProcessor;
-
-    @Autowired
-    CourseRepository courseRepository;
-
-    @Autowired
-    AttendanceService attendanceService;
-
-
-    @Autowired
-    CourseService courseService;
-
+    public CourseController(CsvProcessingService csvProcessingService, RawCourseProcessor rawCourseProcessor, CourseRepository courseRepository, AttendanceService attendanceService, CourseService courseService) {
+        this.csvProcessingService = csvProcessingService;
+        this.rawCourseProcessor = rawCourseProcessor;
+        this.courseRepository = courseRepository;
+        this.attendanceService = attendanceService;
+        this.courseService = courseService;
+    }
 
     @PostMapping("/bulkupload")
     public ResponseEntity<?> courseBulkUpload(@RequestParam("file") MultipartFile file) {
-        List<Course> rawCourses =csvProcessingService.process(file, Course.class);
+        List<Course> rawCourses = csvProcessingService.process(file, Course.class);
         rawCourseProcessor.processRawCourses(rawCourses);
         return ResponseEntity.ok().body(Map.of(
                 "message", "Courses uploaded successfully"
@@ -57,9 +54,7 @@ public class CourseController {
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalDate endDate
     ) {
-        if (!courseRepository.existsById(courseId)) {
-            throw new ResourceNotFoundException("The course doesn't exist with ID: " + courseId);
-        }
+        checkCourseExistence(courseId);
 
         if (startDate != null && endDate != null) {
             return ResponseEntity.ok(attendanceService.calculateAttendanceReportBetweenDates(courseId, startDate, endDate));
@@ -69,13 +64,16 @@ public class CourseController {
     }
 
     @GetMapping("/{courseId}/startDate")
-    public ResponseEntity<?> getCourseStartTime(@PathVariable("courseId") int courseId){
-        if (!courseRepository.existsById(courseId)) {
-            throw new ResourceNotFoundException("The course doesn't exist with ID: " + courseId);
-        }
+    public ResponseEntity<?> getCourseStartTime(@PathVariable("courseId") int courseId) {
+        checkCourseExistence(courseId);
         return ResponseEntity.ok(Map.of(
                 "startDate", courseService.getCourseStartDate(courseId)
         ));
+    }
+
+    private void checkCourseExistence(int courseId){
+        if (!courseRepository.existsById(courseId))
+            throw new ResourceNotFoundException("Course not found with ID: " + courseId);
     }
 
 }

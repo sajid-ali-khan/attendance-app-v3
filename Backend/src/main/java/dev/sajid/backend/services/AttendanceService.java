@@ -1,7 +1,6 @@
 package dev.sajid.backend.services;
 
-import dev.sajid.backend.dtos.AttendanceReport;
-import dev.sajid.backend.dtos.StudentAttendance;
+import dev.sajid.backend.dtos.*;
 import dev.sajid.backend.models.normalized.derived.AttendanceRecord;
 import dev.sajid.backend.models.normalized.derived.Course;
 import dev.sajid.backend.models.normalized.derived.Session;
@@ -31,33 +30,20 @@ public class AttendanceService {
     @Autowired
     private SessionReporitory sessionReporitory;
 
-    @Data
-    public static class AttendanceAggregate{
-        int presentDays;
-        int totalDays;
-        double percentage;
-    }
-
-    public Map<String, Map<Integer, AttendanceAggregate>> calculateFullAttendanceForStudentBatch(int studentBatchId){
+    public FullAttendanceReport calculateFullAttendanceForStudentBatch(int studentBatchId){
         StudentBatch studentBatch = studentBatchRepository.findById(studentBatchId).get();
 
-        Map<String, Map<Integer, AttendanceAggregate>> attendanceMap = new HashMap<>();
+        Map<String, FullStudentAttendance> fullStudentAttendanceMap = new HashMap<>();
 
         for (Student student: studentBatch.getStudents()){
-            attendanceMap.put(student.getRoll(), new HashMap<>());
+            fullStudentAttendanceMap.put(student.getRoll(), new FullStudentAttendance());
         }
 
         for (Course course: studentBatch.getCourses()){
             for (Session session: course.getSessions()){
                 for (AttendanceRecord attendanceRecord: session.getAttendanceRecords()){
                     Student student = attendanceRecord.getStudent();
-                    if (!attendanceMap.get(student.getRoll()).containsKey(course.getId())){
-                        attendanceMap.get(student.getRoll()).put(course.getId(), new AttendanceAggregate());
-                    }
-                    if (attendanceRecord.isStatus()) {
-                        attendanceMap.get(student.getRoll()).get(course.getId()).presentDays += 1;
-                    }
-                    attendanceMap.get(student.getRoll()).get(course.getId()).totalDays += 1;
+                    if (!fullStudentAttendanceMap.get(student.getRoll()).get)
                 }
             }
         }

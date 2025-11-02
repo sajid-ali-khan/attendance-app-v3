@@ -1,5 +1,7 @@
 package dev.sajid.backend.controllers;
 
+import dev.sajid.backend.exceptions.ResourceNotFoundException;
+import dev.sajid.backend.repositories.BranchRepository;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,13 +21,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 @CrossOrigin
 public class BranchSubjectController {
     private final BranchSubjectRepository branchSubjectService;
+    private final BranchRepository branchRepository;
 
-    BranchSubjectController(BranchSubjectRepository branchSubjectService) {
+    BranchSubjectController(BranchSubjectRepository branchSubjectService, BranchRepository branchRepository) {
         this.branchSubjectService = branchSubjectService;
+        this.branchRepository = branchRepository;
     }
 
     @GetMapping("/subjects")
-    public ResponseEntity<List<Subject>> getSubjects(@RequestParam("branchId") int branchId, @RequestParam("semester") int semester) {
+    public ResponseEntity<?> getSubjects(@RequestParam("branchId") int branchId, @RequestParam("semester") int semester) {
+        if (!branchRepository.existsById(branchId))
+            throw new ResourceNotFoundException("Branch doesn't exists with ID: " + branchId);
+
         List<Subject> subjects = branchSubjectService.findSubjectsByBranchIdAndSemester(branchId, semester);
         return ResponseEntity.ok(subjects);
     }

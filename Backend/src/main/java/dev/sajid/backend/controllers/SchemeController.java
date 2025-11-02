@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestController
 @RequestMapping("/api/schemes")
 public class SchemeController {
-    final SchemeRepository schemeRepository;
+    private final SchemeRepository schemeRepository;
 
     SchemeController(SchemeRepository schemeRepository) {
         this.schemeRepository = schemeRepository;
@@ -23,5 +23,5 @@ public class SchemeController {
     public ResponseEntity<List<String>> getSchemes() {
         return ResponseEntity.ok(schemeRepository.findAllCodes());
     }
-    
+
 }

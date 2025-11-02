@@ -1,4 +1,8 @@
 package dev.sajid.backend.controllers;
+
+import dev.sajid.backend.exceptions.ResourceNotFoundException;
+import dev.sajid.backend.repositories.SchemeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,15 +21,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequestMapping("/api/branches")
 @CrossOrigin
 public class BranchController {
-    final BranchRepository branchRepository;
+    private final BranchRepository branchRepository;
+    private final SchemeRepository schemeRepository;
 
-    BranchController(BranchRepository branchRepository) {
+    BranchController(BranchRepository branchRepository, SchemeRepository schemeRepository) {
         this.branchRepository = branchRepository;
+        this.schemeRepository = schemeRepository;
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Branch>> getBranchesByScheme(@RequestParam("scheme") String scheme) {
+    public ResponseEntity<?> getBranchesByScheme(@RequestParam("scheme") String scheme) {
+        if (!schemeRepository.existsByCode(scheme))
+            throw new ResourceNotFoundException("Scheme not found with ID: " + scheme);
         return ResponseEntity.ok(branchRepository.findByScheme(scheme));
     }
-    
+
 }
