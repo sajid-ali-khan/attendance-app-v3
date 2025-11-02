@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,7 +73,7 @@ public class SessionService {
                 session.getNumPresent(),
                 session.getTotalCount(),
                 session.getTimeStamp(),
-                studentAttendanceRowMap
+                new TreeMap<>(studentAttendanceRowMap)
         );
     }
 
@@ -100,7 +97,7 @@ public class SessionService {
     private void createAndAddAttendanceRecords(Session session){
         List<AttendanceRecord> attendanceRecords = new ArrayList<>();
         List<Student> students = courseRepository.findStudentListById(session.getCourse().getId());
-
+        students.sort(Comparator.comparing(Student::getRoll));
         for (Student student: students){
             attendanceRecords.add(new AttendanceRecord(0, session, student, false));
         }

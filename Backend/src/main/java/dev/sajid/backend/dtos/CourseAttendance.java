@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class CourseAttendance {
     Integer courseId;
-    String className;
-    int daysPresent;
-    int totalDays;
+    String subjectName;
+    public int daysPresent;
+    public int totalDays;
     double percentage;
 }

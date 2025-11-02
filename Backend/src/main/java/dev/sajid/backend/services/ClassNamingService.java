@@ -24,6 +24,10 @@ public class ClassNamingService {
         return subjectCode + " - " + subjectFullName;
     }
 
+    public static String formSubjectShortName(Course course){
+        return course.getBranchSubject().getSubject().getShortForm();
+    }
+
 
     private static String formatedSemester(int sem){
         return sem + switch(sem) {

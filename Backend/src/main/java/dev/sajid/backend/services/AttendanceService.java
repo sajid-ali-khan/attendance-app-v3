@@ -9,7 +9,6 @@ import dev.sajid.backend.models.normalized.student.StudentBatch;
 import dev.sajid.backend.repositories.CourseRepository;
 import dev.sajid.backend.repositories.SessionReporitory;
 import dev.sajid.backend.repositories.StudentBatchRepository;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,21 +32,66 @@ public class AttendanceService {
     public FullAttendanceReport calculateFullAttendanceForStudentBatch(int studentBatchId){
         StudentBatch studentBatch = studentBatchRepository.findById(studentBatchId).get();
 
+        if (studentBatch.getCourses().isEmpty())
+            return null;
+
+        FullAttendanceReport fullAttendanceReport = new FullAttendanceReport();
+        fullAttendanceReport.setClassName(ClassNamingService.formClassName(studentBatch.getCourses().get(0)));
         Map<String, FullStudentAttendance> fullStudentAttendanceMap = new HashMap<>();
 
         for (Student student: studentBatch.getStudents()){
-            fullStudentAttendanceMap.put(student.getRoll(), new FullStudentAttendance());
+            FullStudentAttendance fsa = new FullStudentAttendance();
+            fsa.setRoll(student.getRoll());
+            fsa.setName(student.getName());
+            fsa.setCourseAttendanceMap(new HashMap<>());
+            fullStudentAttendanceMap.put(student.getRoll(), fsa);
         }
 
         for (Course course: studentBatch.getCourses()){
             for (Session session: course.getSessions()){
                 for (AttendanceRecord attendanceRecord: session.getAttendanceRecords()){
                     Student student = attendanceRecord.getStudent();
-                    if (!fullStudentAttendanceMap.get(student.getRoll()).get)
+                    if (!fullStudentAttendanceMap.get(student.getRoll()).getCourseAttendanceMap().containsKey(course.getId())){
+                        CourseAttendance ca = new CourseAttendance();
+                        ca.setSubjectName(ClassNamingService.formSubjectShortName(course));
+                        ca.setCourseId(course.getId());
+                        fullStudentAttendanceMap.get(student.getRoll()).getCourseAttendanceMap().put(course.getId(), ca);
+                    }
+                    CourseAttendance ca = fullStudentAttendanceMap.get(student.getRoll()).getCourseAttendanceMap().get(course.getId());
+                    if (attendanceRecord.isStatus())
+                        ca.daysPresent += 1;
+                    ca.totalDays += 1;
+                    fullStudentAttendanceMap.get(student.getRoll()).getCourseAttendanceMap().put(course.getId(), ca);
                 }
             }
         }
-        return attendanceMap;
+
+        for (Map.Entry<String, FullStudentAttendance> entry: fullStudentAttendanceMap.entrySet()){
+            int presentDays = 0;
+            int totalDays = 0;
+            for (Map.Entry<Integer, CourseAttendance> entry1: entry.getValue().getCourseAttendanceMap().entrySet()){
+                int _presentDays = entry1.getValue().daysPresent;
+                int _totalDays = entry1.getValue().totalDays;
+
+                totalDays += _totalDays;
+                presentDays += _presentDays;
+
+                fullStudentAttendanceMap.get(entry.getKey()).getCourseAttendanceMap().get(entry1.getKey()).setPercentage(
+                        (double)_presentDays * 100 / _totalDays
+                );
+            }
+            double total = (double) presentDays * 100 / totalDays;
+            CourseAttendance ca = new CourseAttendance();
+            ca.setPercentage(total);
+            ca.setDaysPresent(presentDays);
+            ca.setTotalDays(totalDays);
+            ca.setSubjectName("Total");
+            ca.setCourseId(-1);
+            fullStudentAttendanceMap.get(entry.getKey()).getCourseAttendanceMap().put(-1, ca);
+        }
+
+        fullAttendanceReport.setFullStudentAttendanceMap(new TreeMap<>(fullStudentAttendanceMap));
+        return fullAttendanceReport;
     }
 
     public AttendanceReport calculateAttendanceReportBetweenDates(int courseId, LocalDate startDate, LocalDate endTime){
