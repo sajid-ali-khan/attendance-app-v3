@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axiosClient from '../api/axiosClient';
 import { useAuth } from '../provider/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 export const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const { setToken } = useAuth();
+    const { token, setToken } = useAuth();
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+    if (token) {
+      navigate("/", { replace: true });
+    }
+  }, [token, navigate]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
