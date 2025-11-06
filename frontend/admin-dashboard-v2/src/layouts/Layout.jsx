@@ -14,8 +14,8 @@ export const DashboardLayout = () => {
     { id: 'dashboard', path: '/', label: 'Dashboard', icon: <DashboardIcon /> },
     { id: 'bulkUpload', path: '/bulk-upload', label: 'Bulk Data Upload', icon: <UploadIcon /> },
     { id: 'assignClass', path: '/assign-class', label: 'Assign Class', icon: <AssignIcon /> },
-    { id: 'studentManagement', path: '/student-management', label: 'Student Management', icon: <StudentIcon /> },
-    { id: 'courseManagement', path: '/course-management', label: 'Course Management', icon: <CourseIcon /> },
+    // { id: 'studentManagement', path: '/student-management', label: 'Student Management', icon: <StudentIcon /> },
+    // { id: 'courseManagement', path: '/course-management', label: 'Course Management', icon: <CourseIcon /> },
     { id: 'attendanceReports', path: '/attendance-reports', label: 'Attendance Reports', icon: <ReportIcon /> },
   ];
 
