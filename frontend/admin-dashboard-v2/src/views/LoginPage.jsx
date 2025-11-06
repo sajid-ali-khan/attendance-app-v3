@@ -10,12 +10,12 @@ export const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { token, setToken } = useAuth();
     const navigate = useNavigate();
-    
+
     useEffect(() => {
-    if (token) {
-      navigate("/", { replace: true });
-    }
-  }, [token, navigate]);
+        if (token) {
+            navigate("/", { replace: true });
+        }
+    }, [token, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,7 +29,8 @@ export const LoginPage = () => {
             });
             setToken(response.data.token);
             // Redirect to the dashboard or another page after successful login
-            window.location.href = '/';
+
+            navigate("/");
         } catch (err) {
             console.error('Login failed:', err);
             setError((err.response && (err.response.status === 401 || err.response.status === 403))

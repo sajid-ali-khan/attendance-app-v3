@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class CourseAttendance {
-    Integer courseId;
+    Integer subjectId;
     String subjectName;
     public int daysPresent;
     public int totalDays;
