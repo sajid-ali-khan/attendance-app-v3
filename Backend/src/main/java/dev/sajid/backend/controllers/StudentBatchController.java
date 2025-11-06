@@ -41,37 +41,72 @@ public class StudentBatchController {
 
     @GetMapping("/branches")
     public ResponseEntity<?> getBranches() {
-        return ResponseEntity.ok(branchService.getDistinctBranches());
+        return ResponseEntity.ok(branchService.getDistinctBranchesByBranchCodes());
     }
 
     @GetMapping("/semesters")
     public ResponseEntity<?> getSemestersByBranchId(
-            @RequestParam(value = "branchId") Integer branchId
+            @RequestParam(value = "branchId", required = false) Integer branchId,
+            @RequestParam(value = "branchCode", required = false) Integer branchCode
     ) {
-        checkBranchExistence(branchId);
-        List<Integer> semesters = studentBatchRepository.findSemestersByBranchId(branchId);
+        if (branchCode == null && branchId == null){
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Provide either branchId or branchCode."
+            ));
+        }
+        if (branchId != null){
+            checkBranchExistence(branchId);
+            List<Integer> semesters = studentBatchRepository.findSemestersByBranchId(branchId);
+            return ResponseEntity.ok(semesters);
+        }
+        List<Integer> semesters = studentBatchRepository.findDistinctSemestersByBranchCode(branchCode);
         return ResponseEntity.ok(semesters);
     }
 
     @GetMapping("/sections")
     public ResponseEntity<?> getSectionsBySemesterAndBranchId(
-            @RequestParam("branchId") Integer branchId,
+            @RequestParam(value = "branchId", required = false) Integer branchId,
+            @RequestParam(value = "branchCode", required = false) Integer branchCode,
             @RequestParam("semester") Integer semester
     ) {
-        checkBranchExistence(branchId);
-        List<String> sections = studentBatchRepository.findSectionsByBranchIdAndSemester(branchId, semester);
+        if (branchCode == null && branchId == null){
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Provide either branchId or branchCode."
+            ));
+        }
+        if (branchId != null){
+            checkBranchExistence(branchId);
+            List<String> sections = studentBatchRepository.findSectionsByBranchIdAndSemester(branchId, semester);
+            return ResponseEntity.ok(sections);
+        }
+        List<String> sections = studentBatchRepository.findDistinctSectionsByBranchCodeAndSemester(branchCode, semester);
         return ResponseEntity.ok(sections);
+
     }
 
     @GetMapping("/subjects")
     public ResponseEntity<?> getSubjectsByBranchAndSemesterAndSection(
-            @RequestParam("branchId") Integer branchId,
+            @RequestParam(value = "branchId", required = false) Integer branchId,
+            @RequestParam(value = "branchCode", required = false) Integer branchCode,
             @RequestParam("semester") Integer semester,
             @RequestParam("section") String section
     ) {
+        if (branchCode == null && branchId == null){
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Provide either branchId or branchCode."
+            ));
+        }
         log.debug("BranchId = {}, semester = {}, section = {}", branchId, semester, section);
-        Optional<StudentBatch> studentBatchOptional = studentBatchRepository.findByBranch_IdAndSemesterAndSection(branchId, semester, section);
 
+        Optional<StudentBatch> studentBatchOptional;
+        if (branchId != null){
+            studentBatchOptional = studentBatchRepository.findByBranch_IdAndSemesterAndSection(branchId, semester, section);
+        }else {
+            studentBatchOptional = studentBatchRepository.findByBranchCodeAndSemesterAndSection(branchCode, semester, section);
+        }
         if (studentBatchOptional.isEmpty()) {
             throw new ResourceNotFoundException("StudentBatch with doesn't exist for given branch, semester and section");
         }
@@ -83,15 +118,30 @@ public class StudentBatchController {
 
     @GetMapping("/report")
     public ResponseEntity<?> getFullAttendance(
-            @RequestParam("branchId") Integer branchId,
+            @RequestParam(value = "branchId", required = false) Integer branchId,
+            @RequestParam(value = "branchCode", required = false) Integer branchCode,
             @RequestParam("semester") Integer semester,
             @RequestParam("section") String section
     ) {
+        if (branchCode == null && branchId == null){
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Provide either branchId or branchCode."
+            ));
+        }
         log.debug("BranchId = {}, semester = {}, section = {}", branchId, semester, section);
-        Optional<StudentBatch> studentBatch = studentBatchRepository.findByBranch_IdAndSemesterAndSection(branchId, semester, section);
-        if (studentBatch.isEmpty()){
+
+        Optional<StudentBatch> studentBatch;
+        if (branchId != null){
+            studentBatch = studentBatchRepository.findByBranch_IdAndSemesterAndSection(branchId, semester, section);
+        }else {
+            studentBatch = studentBatchRepository.findByBranchCodeAndSemesterAndSection(branchCode, semester, section);
+        }
+        if (studentBatch.isEmpty()) {
             throw new ResourceNotFoundException("StudentBatch with doesn't exist for given branch, semester and section");
         }
+        log.debug("BranchId = {}, semester = {}, section = {}", branchId, semester, section);
+
         return ResponseEntity.ok(attendanceService.calculateFullAttendanceForStudentBatch(studentBatch.get().getId()));
     }
 

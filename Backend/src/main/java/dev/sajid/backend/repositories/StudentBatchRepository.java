@@ -19,12 +19,35 @@ public interface StudentBatchRepository extends JpaRepository<StudentBatch, Inte
 
 
     @Query("""
+            select distinct sb.section from StudentBatch sb
+            where sb.branch.branchCode = :branchCode
+            and sb.semester = :semester
+            """)
+    List<String> findDistinctSectionsByBranchCodeAndSemester(@Param("branchCode") int branchCode,
+                                                             @Param("semester") int semester);
+
+    @Query("""
             select sb from StudentBatch sb
             where sb.branch.id = :branchId
             and sb.semester = :semester
             and sb.section = :section
             """)
-    Optional<StudentBatch> findByBranch_IdAndSemesterAndSection(int branchId, int semester, String section);
+    Optional<StudentBatch> findByBranch_IdAndSemesterAndSection(
+            @Param("branchId") int branchId,
+            @Param("semester") int semester,
+            @Param("section") String section);
+
+
+    @Query("""
+            select sb from StudentBatch sb
+            where sb.branch.branchCode = :branchCode
+            and sb.semester = :semester
+            and sb.section = :section
+            """)
+    Optional<StudentBatch> findByBranchCodeAndSemesterAndSection(
+            @Param("branchCode")int branchCode,
+            @Param("semester")int semester,
+            @Param("section")String section);
 
     @Query("""
             select distinct sb.branch from StudentBatch sb
@@ -32,4 +55,16 @@ public interface StudentBatchRepository extends JpaRepository<StudentBatch, Inte
             order by sb.branch.branchCode
             """)
     List<Branch> findDistinctBranches();
+
+    @Query("""
+            select distinct sb.branch.branchCode from StudentBatch sb
+            order by sb.branch.branchCode
+            """)
+    List<Integer> findDistinctBranchCodes();
+
+    @Query("""
+            select distinct semester from StudentBatch sb
+            where sb.branch.branchCode = :branchCode
+            """)
+    List<Integer> findDistinctSemestersByBranchCode(@Param("branchCode") int branchCode);
 }
