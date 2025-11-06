@@ -1,6 +1,5 @@
 package dev.sajid.backend.controllers;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.sajid.backend.dtos.ClassAssignmentDto;
-import dev.sajid.backend.dtos.ViewAssignmentDto;
-import dev.sajid.backend.models.normalized.course.BranchSubject;
 import dev.sajid.backend.models.normalized.derived.CourseAssignment;
-import dev.sajid.backend.models.normalized.student.StudentBatch;
 import dev.sajid.backend.services.CourseAssignmentService;
 import jakarta.transaction.Transactional;
 
@@ -51,7 +47,7 @@ public class CourseAssignmentController {
                                                         @RequestParam("section") String section) {
         checkBranchExistence(branchId);
         return ResponseEntity.ok(
-                studentBatchRepository.findFirstByBranchIdAndSemesterAndSection(branchId, semester, section)
+                studentBatchRepository.findByBranch_IdAndSemesterAndSection(branchId, semester, section)
                         .orElseThrow(() -> new ResourceNotFoundException("BranchSubject not found.")));
     }
 

@@ -31,7 +31,7 @@ public class SessionController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getSessionsBySessionIdAndDate(
+    public ResponseEntity<?> getSessionsByCourseIdAndDate(
             @RequestParam("courseId") int courseId,
             @RequestParam("date") LocalDate date
     ) {

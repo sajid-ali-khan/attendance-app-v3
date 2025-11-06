@@ -10,9 +10,9 @@ public class ClassNamingService {
         String section = course.getStudentBatch().getSection();
 
         return String.format(
-                "%s Sem %s - %s",
-                formatedSemester(semester),
+                "%s%s%s",
                 branchName,
+                semester,
                 section
         );
     }

@@ -59,7 +59,7 @@ public class CourseAssignmentService {
         // first create the course object
         // ------------------------------------------------
         // 1. fetch the student batch using branchId, semester, section
-        StudentBatch studentBatch = studentBatchRepository.findFirstByBranchIdAndSemesterAndSection(
+        StudentBatch studentBatch = studentBatchRepository.findByBranch_IdAndSemesterAndSection(
                 classAssignmentDto.branchId(),
                 classAssignmentDto.semester(),
                 classAssignmentDto.section()).orElseThrow(() -> new RuntimeException("Student batch not found"));

@@ -8,5 +8,5 @@ import java.util.Map;
 public class FullStudentAttendance {
     String roll;
     String name;
-    Map<Integer, CourseAttendance> courseAttendanceMap;
+    Map<Integer, SubjectAttendance> subjectAttendanceMap;
 }
