@@ -200,7 +200,7 @@ export const AssignClassForm = () => {
                     <SearchableDropdown label="Faculty" options={faculties} selectedFacultyId={selectedFacultyId} setSelectedFacultyId={setSelectedFacultyId} />
                 </div>
                 <div className="mt-6">
-                    <button className="bg-slate-800 text-white font-semibold py-2 px-6 hover:bg-slate-700" onClick={handleAssignClass}>Assign</button>
+                    <button className="bg-slate-800 cursor-pointer text-white font-semibold py-2 px-6 hover:bg-slate-700" onClick={handleAssignClass}>Assign</button>
                 </div>
             </Card>
         </div>

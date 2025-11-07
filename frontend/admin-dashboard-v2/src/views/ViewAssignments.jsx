@@ -118,7 +118,7 @@ const ViewAssignments = () => {
                 <div className="flex items-center gap-4 mb-6">
                     <button
                         onClick={handleViewAssignments}
-                        className="bg-slate-800 text-white font-semibold py-2 px-6 hover:bg-slate-700 transition-colors duration-200 h-10 disabled:bg-slate-400"
+                        className="bg-slate-800 cursor-pointer text-white font-semibold py-2 px-6 hover:bg-slate-700 transition-colors duration-200 h-10 disabled:bg-slate-400"
                         disabled={isLoading}
                     >
                         {isLoading ? 'Loading...' : 'View Assignments'}

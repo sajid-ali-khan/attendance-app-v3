@@ -90,7 +90,7 @@ export const FileUploader = ({ api }) => {
                 <p className="text-xs text-slate-500">Only .csv files are accepted.</p>
                 <button
                     onClick={handleUpload}
-                    className="mt-4 bg-slate-800 text-white font-semibold py-2 px-6 hover:bg-slate-700 transition-colors duration-200 disabled:bg-slate-400 disabled:cursor-not-allowed flex items-center justify-center min-w-[100px]"
+                    className="mt-4 bg-slate-800 text-white cursor-pointer font-semibold py-2 px-6 hover:bg-slate-700 transition-colors duration-200 disabled:bg-slate-400 disabled:cursor-not-allowed flex items-center justify-center min-w-[100px]"
                     disabled={!file || isLoading}
                 >
                     {isLoading ? (
