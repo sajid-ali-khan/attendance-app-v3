@@ -1,6 +1,6 @@
 // src/layouts/DashboardLayout.jsx
 import React, { useState } from 'react';
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   DashboardIcon,
   UploadIcon,
@@ -9,9 +9,17 @@ import {
   CourseIcon,
   ReportIcon
 } from "../components/icons";
+import { useAuth } from "../provider/AuthProvider";
 
 export const DashboardLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    setToken(null); // This will remove token from localStorage due to AuthProvider useEffect
+    navigate("/login");
+  };
 
   const navItems = [
     { id: 'dashboard', path: '/', label: 'Dashboard', icon: <DashboardIcon /> },
@@ -80,6 +88,17 @@ export const DashboardLayout = () => {
             </NavLink>
           ))}
         </nav>
+        
+        {/* Logout button */}
+        <button
+          onClick={handleLogout}
+          className="w-full p-4 text-left text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white border-t border-slate-700 flex items-center gap-3 cursor-pointer"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span>Logout</span>
+        </button>
       </aside>
 
       {/* Main content */}
