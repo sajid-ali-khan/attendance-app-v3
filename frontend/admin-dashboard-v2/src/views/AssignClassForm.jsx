@@ -56,6 +56,7 @@ export const AssignClassForm = () => {
         const fetchInitialData = () => {
             axiosClient.get('/schemes')
                 .then(response => {
+                    console.log("schemes:", response.data);
                     setSchemes(response.data);
                 })
                 .catch(error => {

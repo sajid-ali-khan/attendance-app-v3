@@ -1,10 +1,8 @@
 import axios from "axios";
 
-const token = localStorage.getItem("token");
-
+axios.defaults.headers.common["ngrok-skip-browser-warning"] = "true";// need to be removed in production
 const axiosClient = axios.create({
-  baseURL: "/api", // ✅ relative URL — Vite proxy will handle the rest
-  headers: token ? { Authorization: `Bearer ${token}` } : {},
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 axiosClient.interceptors.request.use((config) => {
