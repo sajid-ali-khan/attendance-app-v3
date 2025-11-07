@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/course-assignments")
-@CrossOrigin
 public class CourseAssignmentController {
     private final StudentBatchRepository studentBatchRepository;
     private final BranchSubjectRepository branchSubjectRepository;

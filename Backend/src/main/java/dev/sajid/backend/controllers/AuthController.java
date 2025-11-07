@@ -13,7 +13,6 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin
 public class AuthController {
     @Autowired
     AuthService authService;

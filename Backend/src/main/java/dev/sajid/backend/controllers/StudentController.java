@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
 @RequestMapping("/api/students")
-@CrossOrigin
 public class StudentController {
     @Autowired
     CsvProcessingService csvProcessingService;

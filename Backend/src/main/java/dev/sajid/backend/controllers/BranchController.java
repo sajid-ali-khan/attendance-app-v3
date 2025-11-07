@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/branches")
-@CrossOrigin
 public class BranchController {
     private final BranchRepository branchRepository;
     private final SchemeRepository schemeRepository;

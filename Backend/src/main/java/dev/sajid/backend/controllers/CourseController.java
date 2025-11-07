@@ -23,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 @Slf4j
 @RestController
 @RequestMapping("/api/courses")
-@CrossOrigin
 public class CourseController {
     private final CsvProcessingService csvProcessingService;
     private final RawCourseProcessor rawCourseProcessor;

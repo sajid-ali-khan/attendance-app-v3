@@ -22,7 +22,6 @@ import dev.sajid.backend.services.csv.CsvProcessingService;
 @Slf4j
 @RestController
 @RequestMapping("/api/faculties")
-@CrossOrigin
 public class FacultyController {
     final CsvProcessingService csvProcessingService;
     final RawEmployeeProcessor rawEmployeeProcessor;

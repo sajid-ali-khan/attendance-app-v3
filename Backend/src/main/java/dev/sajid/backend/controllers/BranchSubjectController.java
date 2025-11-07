@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/branch-subjects")
-@CrossOrigin
 public class BranchSubjectController {
     private final BranchSubjectRepository branchSubjectService;
     private final BranchRepository branchRepository;

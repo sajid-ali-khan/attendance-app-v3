@@ -22,7 +22,6 @@ import static java.rmi.server.LogStream.log;
 
 @RestController
 @RequestMapping("/api/student-batches")
-@CrossOrigin
 @Slf4j
 public class StudentBatchController {
     private final StudentBatchRepository studentBatchRepository;
