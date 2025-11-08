@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.headers.common["ngrok-skip-browser-warning"] = "true";// need to be removed in production
+// axios.defaults.headers.common["ngrok-skip-browser-warning"] = "true";// need to be removed in production
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
