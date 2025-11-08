@@ -10,7 +10,6 @@ import dev.sajid.backend.repositories.AttendanceRecordRepository;
 import dev.sajid.backend.repositories.CourseRepository;
 import dev.sajid.backend.repositories.FacultyRepository;
 import dev.sajid.backend.repositories.SessionReporitory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,17 +19,20 @@ import java.util.stream.Collectors;
 
 @Service
 public class SessionService {
-    @Autowired
-    private SessionReporitory sessionReporitory;
+    private final SessionReporitory sessionReporitory;
 
-    @Autowired
-    private CourseRepository courseRepository;
+    private final CourseRepository courseRepository;
 
-    @Autowired
-    private FacultyRepository facultyRepository;
+    private final FacultyRepository facultyRepository;
 
-    @Autowired
-    private AttendanceRecordRepository attendanceRecordRepository;
+    private final AttendanceRecordRepository attendanceRecordRepository;
+
+    public SessionService(SessionReporitory sessionReporitory, CourseRepository courseRepository, FacultyRepository facultyRepository, AttendanceRecordRepository attendanceRecordRepository) {
+        this.sessionReporitory = sessionReporitory;
+        this.courseRepository = courseRepository;
+        this.facultyRepository = facultyRepository;
+        this.attendanceRecordRepository = attendanceRecordRepository;
+    }
 
     public Map<Integer, SessionDto> getSessionsByCourseIdAndDate(int courseId, LocalDate date) {
         List<Session> sessions = sessionReporitory.findByCourse_IdAndTimeStampBetween(courseId, date.atStartOfDay(), date.plusDays(1).atStartOfDay());

@@ -15,8 +15,11 @@ import java.util.List;
 @Slf4j
 @Service
 public class CourseService {
-    @Autowired
     CourseRepository courseRepository;
+
+    public CourseService(CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
+    }
 
     public LocalDate getCourseStartDate(int courseId){
         List<Session> sessionList = courseRepository.findById(courseId).get().getSessions();

@@ -16,11 +16,14 @@ import java.util.Optional;
 @Service
 public class AuthService {
 
-    @Autowired
     JwtUtils jwtUtils;
 
-    @Autowired
     AuthenticationManager authenticationManager;
+
+    public AuthService(JwtUtils jwtUtils, AuthenticationManager authenticationManager) {
+        this.jwtUtils = jwtUtils;
+        this.authenticationManager = authenticationManager;
+    }
 
     public Optional<JwtResponse> loginUser(LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(

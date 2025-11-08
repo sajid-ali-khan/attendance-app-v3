@@ -10,8 +10,11 @@ import java.util.List;
 
 @Service
 public class FacultyService {
-    @Autowired
-    private FacultyRepository facultyRepository;
+    private final FacultyRepository facultyRepository;
+
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
 
     public List<AssignedClassDto> getAssignedClasses(String facultyId){
         List<CourseAssignment> courseAssignments = facultyRepository.findCourseAssignmentsById(facultyId);

@@ -3629,3 +3629,8 @@ Consider defining a bean of type 'org.springframework.security.authentication.Au
 2025-11-07T23:53:12.646+05:30 DEBUG 41253 --- [Backend] [http-nio-8080-exec-7] dev.sajid.backend.jwt.AuthTokenFilter    : AuthFilter called for uri /api/courses/4/attendanceReport
 2025-11-07T23:53:12.646+05:30 DEBUG 41253 --- [Backend] [http-nio-8080-exec-7] dev.sajid.backend.jwt.JwtUtils           : Authorization header: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMDAxIiwiaWF0IjoxNzYyNTM5NjgzLCJleHAiOjE3NjI1NzU2ODN9.DeQb6VcLLB-bt1IhWDdlavjPPwqdx3wHqCAcRrp6VMw
 2025-11-07T23:53:12.647+05:30 DEBUG 41253 --- [Backend] [http-nio-8080-exec-7] dev.sajid.backend.jwt.AuthTokenFilter    : AuthTokenFilter.java: {}eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMDAxIiwiaWF0IjoxNzYyNTM5NjgzLCJleHAiOjE3NjI1NzU2ODN9.DeQb6VcLLB-bt1IhWDdlavjPPwqdx3wHqCAcRrp6VMw
+2025-11-07T23:55:19.250+05:30  INFO 41253 --- [Backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-07T23:55:19.254+05:30  INFO 41253 --- [Backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-07T23:55:19.260+05:30  INFO 41253 --- [Backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-07T23:55:19.261+05:30  INFO 41253 --- [Backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...
+2025-11-07T23:55:19.273+05:30  INFO 41253 --- [Backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.

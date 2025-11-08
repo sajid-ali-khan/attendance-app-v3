@@ -9,7 +9,6 @@ import dev.sajid.backend.models.normalized.student.StudentBatch;
 import dev.sajid.backend.repositories.CourseRepository;
 import dev.sajid.backend.repositories.SessionReporitory;
 import dev.sajid.backend.repositories.StudentBatchRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,14 +19,17 @@ import java.util.TreeMap;
 
 @Service
 public class AttendanceService {
-    @Autowired
-    private StudentBatchRepository studentBatchRepository;
+    private final StudentBatchRepository studentBatchRepository;
 
-    @Autowired
-    private CourseRepository courseRepository;
+    private final CourseRepository courseRepository;
 
-    @Autowired
-    private SessionReporitory sessionReporitory;
+    private final SessionReporitory sessionReporitory;
+
+    public AttendanceService(StudentBatchRepository studentBatchRepository, CourseRepository courseRepository, SessionReporitory sessionReporitory) {
+        this.studentBatchRepository = studentBatchRepository;
+        this.courseRepository = courseRepository;
+        this.sessionReporitory = sessionReporitory;
+    }
 
     public FullAttendanceReport calculateFullAttendanceForStudentBatch(int studentBatchId){
         StudentBatch studentBatch = studentBatchRepository.findById(studentBatchId).get();

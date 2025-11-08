@@ -16,11 +16,14 @@ import dev.sajid.backend.repositories.FacultyRepository;
 
 @Service
 public class RawEmployeeProcessor {
-    @Autowired
-    FacultyRepository facultyRepository;
+    private final FacultyRepository facultyRepository;
 
-    @Autowired
-    BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public RawEmployeeProcessor(FacultyRepository facultyRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.facultyRepository = facultyRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public void processEmployees(List<Employee> rawEmployees) {
         // fetch existing employees in to a map (id -> faculty)
