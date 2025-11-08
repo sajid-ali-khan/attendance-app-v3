@@ -1,6 +1,0 @@
-spring:
-  datasource:
-    url: ${RAILWAY_DB_URL}
-    driver-class-name: org.postgresql.Driver
-    username: ${RAILWAY_DB_USER}
-    password: ${RAILWAY_DB_PWD}
