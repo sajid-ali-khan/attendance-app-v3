@@ -146,3 +146,69 @@
 2025-11-08T09:59:54.871+05:30  INFO 27984 --- [Backend] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
 2025-11-08T09:59:54.912+05:30  INFO 27984 --- [Backend] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
 2025-11-08T09:59:54.924+05:30  INFO 27984 --- [Backend] [restartedMain] dev.sajid.backend.BackendApplication     : Started BackendApplication in 10.333 seconds (process running for 10.928)
+2025-11-08T10:11:16.064+05:30  INFO 27984 --- [Backend] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-08T10:11:16.065+05:30  INFO 27984 --- [Backend] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-08T10:11:16.068+05:30  INFO 27984 --- [Backend] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2025-11-08T10:11:16.112+05:30 DEBUG 27984 --- [Backend] [http-nio-8080-exec-2] dev.sajid.backend.jwt.AuthTokenFilter    : AuthFilter called for uri /api/schemes
+2025-11-08T10:11:16.113+05:30 DEBUG 27984 --- [Backend] [http-nio-8080-exec-2] dev.sajid.backend.jwt.JwtUtils           : Authorization header: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBncHJlYy5hYy5pbiIsImlhdCI6MTc2MjU3NDU1NCwiZXhwIjoxNzYyNjEwNTU0fQ.IsiMFRj0bSigEUuyWRaDc2Wq60Fl3UlVqN5MVyldPAY
+2025-11-08T10:11:16.114+05:30 DEBUG 27984 --- [Backend] [http-nio-8080-exec-2] dev.sajid.backend.jwt.AuthTokenFilter    : AuthTokenFilter.java: {}eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBncHJlYy5hYy5pbiIsImlhdCI6MTc2MjU3NDU1NCwiZXhwIjoxNzYyNjEwNTU0fQ.IsiMFRj0bSigEUuyWRaDc2Wq60Fl3UlVqN5MVyldPAY
+2025-11-08T10:11:27.553+05:30 DEBUG 27984 --- [Backend] [http-nio-8080-exec-3] dev.sajid.backend.jwt.AuthTokenFilter    : AuthFilter called for uri /api/auth/login
+2025-11-08T10:11:27.553+05:30 DEBUG 27984 --- [Backend] [http-nio-8080-exec-3] dev.sajid.backend.jwt.JwtUtils           : Authorization header: null
+2025-11-08T10:11:27.554+05:30 DEBUG 27984 --- [Backend] [http-nio-8080-exec-3] dev.sajid.backend.jwt.AuthTokenFilter    : AuthTokenFilter.java: {}null
+2025-11-08T10:11:27.666+05:30 DEBUG 27984 --- [Backend] [http-nio-8080-exec-3] d.s.backend.controllers.AuthController   : User: LoginRequest(username=admin@gprec.ac.in, password=Admin@123) requested login.
+2025-11-08T10:11:27.975+05:30  INFO 27984 --- [Backend] [http-nio-8080-exec-3] d.s.backend.controllers.AuthController   : User admin@gprec.ac.in logged in.
+2025-11-08T10:12:07.737+05:30  INFO 27984 --- [Backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-08T10:12:07.745+05:30  INFO 27984 --- [Backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-08T10:12:07.753+05:30  INFO 27984 --- [Backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08T10:12:07.772+05:30  WARN 27984 --- [Backend] [SpringApplicationShutdownHook] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-232]
+2025-11-08T10:12:07.773+05:30  INFO 27984 --- [Backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-08T10:12:07.776+05:30  INFO 27984 --- [Backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-08T10:12:15.850+05:30  INFO 29594 --- [Backend] [restartedMain] dev.sajid.backend.BackendApplication     : Starting BackendApplication using Java 21.0.8 with PID 29594 (/home/sajid/Desktop/personal/AttendanceApp/Backend/target/classes started by sajid in /home/sajid/Desktop/personal/AttendanceApp/Backend)
+2025-11-08T10:12:15.853+05:30 DEBUG 29594 --- [Backend] [restartedMain] dev.sajid.backend.BackendApplication     : Running with Spring Boot v3.5.6, Spring v6.2.11
+2025-11-08T10:12:15.854+05:30  INFO 29594 --- [Backend] [restartedMain] dev.sajid.backend.BackendApplication     : No active profile set, falling back to 1 default profile: "default"
+2025-11-08T10:12:15.919+05:30  INFO 29594 --- [Backend] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-11-08T10:12:15.919+05:30  INFO 29594 --- [Backend] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-11-08T10:12:17.175+05:30  INFO 29594 --- [Backend] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-08T10:12:17.274+05:30  INFO 29594 --- [Backend] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 86 ms. Found 11 JPA repository interfaces.
+2025-11-08T10:12:18.574+05:30  INFO 29594 --- [Backend] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-08T10:12:18.592+05:30  INFO 29594 --- [Backend] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-08T10:12:18.593+05:30  INFO 29594 --- [Backend] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-11-08T10:12:18.649+05:30  INFO 29594 --- [Backend] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-08T10:12:18.652+05:30  INFO 29594 --- [Backend] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2731 ms
+2025-11-08T10:12:19.084+05:30  INFO 29594 --- [Backend] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-08T10:12:19.241+05:30  INFO 29594 --- [Backend] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-11-08T10:12:19.338+05:30  INFO 29594 --- [Backend] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-08T10:12:19.952+05:30  INFO 29594 --- [Backend] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-08T10:12:19.987+05:30  INFO 29594 --- [Backend] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-08T10:12:20.223+05:30  INFO 29594 --- [Backend] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:90ab616d-b88c-4015-8c95-fe209d4147cb user=SA
+2025-11-08T10:12:20.226+05:30  INFO 29594 --- [Backend] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-08T10:12:20.254+05:30  WARN 29594 --- [Backend] [restartedMain] org.hibernate.dialect.Dialect            : HHH000511: The 2.3.232 version for [org.hibernate.dialect.PostgreSQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 12.0.0. Check the community dialects project for available legacy versions.
+2025-11-08T10:12:20.266+05:30  WARN 29594 --- [Backend] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-08T10:12:20.298+05:30  INFO 29594 --- [Backend] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-08T10:12:21.618+05:30  INFO 29594 --- [Backend] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-08T10:12:21.779+05:30  INFO 29594 --- [Backend] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-08T10:12:22.190+05:30  INFO 29594 --- [Backend] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-08T10:12:22.878+05:30 DEBUG 29594 --- [Backend] [restartedMain] dev.sajid.backend.jwt.AuthTokenFilter    : Filter 'authTokenFilter' configured for use
+2025-11-08T10:12:22.968+05:30  INFO 29594 --- [Backend] [restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-11-08T10:12:22.969+05:30  WARN 29594 --- [Backend] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-11-08T10:12:23.608+05:30  WARN 29594 --- [Backend] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-08T10:12:24.216+05:30  INFO 29594 --- [Backend] [restartedMain] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2025-11-08T10:12:24.491+05:30  INFO 29594 --- [Backend] [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:90ab616d-b88c-4015-8c95-fe209d4147cb'
+2025-11-08T10:12:24.605+05:30  INFO 29594 --- [Backend] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-11-08T10:12:24.650+05:30  INFO 29594 --- [Backend] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-08T10:12:24.666+05:30  INFO 29594 --- [Backend] [restartedMain] dev.sajid.backend.BackendApplication     : Started BackendApplication in 9.456 seconds (process running for 9.983)
+2025-11-08T10:13:09.166+05:30  INFO 29594 --- [Backend] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-08T10:13:09.166+05:30  INFO 29594 --- [Backend] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-08T10:13:09.169+05:30  INFO 29594 --- [Backend] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2025-11-08T10:13:09.208+05:30 DEBUG 29594 --- [Backend] [http-nio-8080-exec-2] dev.sajid.backend.jwt.AuthTokenFilter    : AuthFilter called for uri /api/auth/login
+2025-11-08T10:13:09.209+05:30 DEBUG 29594 --- [Backend] [http-nio-8080-exec-2] dev.sajid.backend.jwt.JwtUtils           : Authorization header: null
+2025-11-08T10:13:09.210+05:30 DEBUG 29594 --- [Backend] [http-nio-8080-exec-2] dev.sajid.backend.jwt.AuthTokenFilter    : AuthTokenFilter.java: {}null
+2025-11-08T10:13:09.381+05:30 DEBUG 29594 --- [Backend] [http-nio-8080-exec-2] d.s.backend.controllers.AuthController   : User: LoginRequest(username=admin@gprec.ac.in, password=Admin@123) requested login.
+2025-11-08T10:13:09.811+05:30  INFO 29594 --- [Backend] [http-nio-8080-exec-2] d.s.backend.controllers.AuthController   : User admin@gprec.ac.in logged in.
