@@ -2,11 +2,11 @@ spring:
   application:
     name: Backend
 
-  datasource:
-    url: ${MY_DB_URL}
-    driver-class-name: org.postgresql.Driver
-    username: ${MY_DB_UNAME}
-    password: ${MY_DB_PWD}
+#  datasource:
+#    url: ${MY_DB_URL}
+#    driver-class-name: org.postgresql.Driver
+#    username: ${MY_DB_UNAME}
+#    password: ${MY_DB_PWD}
 
   jpa:
     hibernate:
