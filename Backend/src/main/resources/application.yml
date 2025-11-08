@@ -11,14 +11,8 @@ spring:
         format_sql: true
         globally_quoted_identifiers: true
 
-  profiles:
-    active: dev
 server:
-  address: 0.0.0.0
   port: 8080
-
-
-
 
 
 app:
