@@ -3,7 +3,6 @@ package dev.sajid.backend.controllers;
 import dev.sajid.backend.exceptions.ResourceNotFoundException;
 import dev.sajid.backend.repositories.CourseRepository;
 import dev.sajid.backend.services.AttendanceService;
-import dev.sajid.backend.services.CourseService;
 import dev.sajid.backend.services.csv.RawCourseProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 
@@ -28,14 +26,12 @@ public class CourseController {
     private final RawCourseProcessor rawCourseProcessor;
     private final CourseRepository courseRepository;
     private final AttendanceService attendanceService;
-    private final CourseService courseService;
 
-    public CourseController(CsvProcessingService csvProcessingService, RawCourseProcessor rawCourseProcessor, CourseRepository courseRepository, AttendanceService attendanceService, CourseService courseService) {
+    public CourseController(CsvProcessingService csvProcessingService, RawCourseProcessor rawCourseProcessor, CourseRepository courseRepository, AttendanceService attendanceService) {
         this.csvProcessingService = csvProcessingService;
         this.rawCourseProcessor = rawCourseProcessor;
         this.courseRepository = courseRepository;
         this.attendanceService = attendanceService;
-        this.courseService = courseService;
     }
 
     @PostMapping("/bulkupload")
@@ -60,14 +56,6 @@ public class CourseController {
         }
 
         return ResponseEntity.ok(attendanceService.calculateFullAttendanceReportOfCourse(courseId));
-    }
-
-    @GetMapping("/{courseId}/startDate")
-    public ResponseEntity<?> getCourseStartTime(@PathVariable("courseId") int courseId) {
-        checkCourseExistence(courseId);
-        return ResponseEntity.ok(Map.of(
-                "startDate", courseService.getCourseStartDate(courseId)
-        ));
     }
 
     private void checkCourseExistence(int courseId){

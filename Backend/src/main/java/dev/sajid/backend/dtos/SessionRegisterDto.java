@@ -2,6 +2,7 @@ package dev.sajid.backend.dtos;
 
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ public record SessionRegisterDto(
         String sessionName,
         int presentCount,
         int totalCount,
-        LocalDateTime updatedAt,
+        Instant updatedAt,
         Map<Integer, AttendanceRecordDto> attendanceRowMap
 ) {
 

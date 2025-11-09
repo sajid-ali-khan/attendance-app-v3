@@ -12,9 +12,7 @@ import dev.sajid.backend.repositories.FacultyRepository;
 import dev.sajid.backend.repositories.SessionReporitory;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,8 +34,10 @@ public class SessionService {
     }
 
     public Map<Integer, SessionDto> getSessionsByCourseIdAndDate(int courseId, LocalDate date) {
-        List<Session> sessions = sessionReporitory.findByCourse_IdAndTimeStampBetween(courseId, date.atStartOfDay(), date.plusDays(1).atStartOfDay());
-
+        ZoneId zone = ZoneId.of("Asia/Kolkata");
+        Instant start = date.atStartOfDay(zone).toInstant();
+        Instant end = date.plusDays(1).atStartOfDay(zone).toInstant();
+        List<Session> sessions = sessionReporitory.findByCourse_IdAndTimeStampBetween(courseId, start, end);
         return sessions.stream()
                 .collect(Collectors.toMap(
                         Session::getId, // key mapper
@@ -50,7 +50,6 @@ public class SessionService {
         Session newSession = new Session();
         newSession.setCourse(courseRepository.findById(courseId).get());
         newSession.setFaculty(facultyRepository.findByUsername(facultyCode).get());
-        newSession.setTimeStamp(LocalDateTime.now(Clock.systemUTC()));
         sessionReporitory.save(newSession);
         createAndAddAttendanceRecords(newSession);
         return new SessionDto(newSession.getId(), newSession.getSessionName(), newSession.getTimeStamp());
@@ -84,7 +83,6 @@ public class SessionService {
         Session actualSession = sessionReporitory.findById(sessionRegisterDto.sessionId()).get();
         actualSession.setSessionName(sessionRegisterDto.sessionName());
         actualSession.setNumPresent(sessionRegisterDto.presentCount());
-        actualSession.setTimeStamp(LocalDateTime.now(Clock.systemUTC()));
         updateAttendanceRecords(actualSession, sessionRegisterDto.attendanceRowMap());
     }
 

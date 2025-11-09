@@ -11,7 +11,10 @@ import dev.sajid.backend.repositories.SessionReporitory;
 import dev.sajid.backend.repositories.StudentBatchRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +41,7 @@ public class AttendanceService {
             return null;
 
         FullAttendanceReport fullAttendanceReport = new FullAttendanceReport();
-        fullAttendanceReport.setClassName(ClassNamingService.formClassName(studentBatch.getCourses().get(0)));
+        fullAttendanceReport.setClassName(ClassNamingService.formClassName(studentBatch.getCourses().getFirst()));
         Map<String, FullStudentAttendance> fullStudentAttendanceMap = new HashMap<>();
 
         for (Student student: studentBatch.getStudents()){
@@ -96,10 +99,13 @@ public class AttendanceService {
         return fullAttendanceReport;
     }
 
-    public AttendanceReport calculateAttendanceReportBetweenDates(int courseId, LocalDate startDate, LocalDate endTime){
+    public AttendanceReport calculateAttendanceReportBetweenDates(int courseId, LocalDate startDate, LocalDate endDate){
         Course course = courseRepository.findById(courseId).get();
+        ZoneId zone = ZoneId.of("Asia/Kolkata");
+        Instant start = startDate.atStartOfDay(zone).toInstant();
+        Instant end = endDate.plusDays(1).atStartOfDay(zone).toInstant();
 
-        List<Session> sessions = sessionReporitory.findByCourse_IdAndTimeStampBetween(courseId, startDate.atStartOfDay(), endTime.plusDays(1).atStartOfDay());
+        List<Session> sessions = sessionReporitory.findByCourse_IdAndTimeStampBetween(courseId, start, end);
 
         return calculateAttendanceReport(sessions, course);
     }
