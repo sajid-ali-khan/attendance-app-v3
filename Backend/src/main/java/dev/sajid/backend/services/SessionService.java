@@ -12,6 +12,7 @@ import dev.sajid.backend.repositories.FacultyRepository;
 import dev.sajid.backend.repositories.SessionReporitory;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -49,7 +50,7 @@ public class SessionService {
         Session newSession = new Session();
         newSession.setCourse(courseRepository.findById(courseId).get());
         newSession.setFaculty(facultyRepository.findByUsername(facultyCode).get());
-        newSession.setTimeStamp(LocalDateTime.now());
+        newSession.setTimeStamp(LocalDateTime.now(Clock.systemUTC()));
         sessionReporitory.save(newSession);
         createAndAddAttendanceRecords(newSession);
         return new SessionDto(newSession.getId(), newSession.getSessionName(), newSession.getTimeStamp());
@@ -83,7 +84,7 @@ public class SessionService {
         Session actualSession = sessionReporitory.findById(sessionRegisterDto.sessionId()).get();
         actualSession.setSessionName(sessionRegisterDto.sessionName());
         actualSession.setNumPresent(sessionRegisterDto.presentCount());
-        actualSession.setTimeStamp(LocalDateTime.now());
+        actualSession.setTimeStamp(LocalDateTime.now(Clock.systemUTC()));
         updateAttendanceRecords(actualSession, sessionRegisterDto.attendanceRowMap());
     }
 
