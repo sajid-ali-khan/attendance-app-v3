@@ -8,5 +8,6 @@ import lombok.Data;
 public class AssignedClassDto {
     int classId; // courseId from backend perspective, classId from client perspective
     String className;
-    String subjectName;
+    String subjectShortForm;
+    String subjectFullForm;
 }

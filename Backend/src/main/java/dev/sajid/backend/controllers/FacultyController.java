@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import dev.sajid.backend.dtos.AssignedClassDto;
+import dev.sajid.backend.dtos.ChangePasswordRequest;
 import dev.sajid.backend.exceptions.ResourceNotFoundException;
 import dev.sajid.backend.services.FacultyService;
 import dev.sajid.backend.services.csv.RawEmployeeProcessor;
@@ -33,6 +34,16 @@ public class FacultyController {
         this.rawEmployeeProcessor = rawEmployeeProcessor;
         this.facultyRepository = facultyRepository;
         this.facultyService = facultyService;
+    }
+
+    @PutMapping("/{facultyCode}/change-password")
+    public ResponseEntity<?> changePassword(@PathVariable("facultyCode") String facultyCode, @RequestBody ChangePasswordRequest changePasswordRequest) {
+        if (changePasswordRequest == null)
+            return ResponseEntity.badRequest().build();
+        final boolean changed = facultyService.changePassword(facultyCode, changePasswordRequest);
+        return (changed) ?
+                ResponseEntity.noContent().build() :
+                ResponseEntity.status(422).build();
     }
 
     @PostMapping("/bulkupload")
