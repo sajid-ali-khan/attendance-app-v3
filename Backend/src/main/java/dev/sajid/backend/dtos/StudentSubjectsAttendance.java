@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
-public class FullStudentAttendance {
+public class StudentSubjectsAttendance {
     String roll;
     String name;
     Map<Integer, SubjectAttendance> subjectAttendanceMap;

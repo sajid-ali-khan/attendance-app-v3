@@ -15,11 +15,6 @@ public class BranchService {
         this.studentBatchRepository = studentBatchRepository;
     }
 
-    public List<Branch> getDistinctBranches(){
-
-        return studentBatchRepository.findDistinctBranches();
-    }
-
     public List<BranchDto> getDistinctBranchesByBranchCodes(){
         List<Integer> branchCodes = studentBatchRepository.findDistinctBranchCodes();
 

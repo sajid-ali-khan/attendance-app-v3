@@ -5,27 +5,24 @@ import dev.sajid.backend.dtos.SessionRegisterDto;
 import dev.sajid.backend.exceptions.ResourceNotFoundException;
 import dev.sajid.backend.repositories.CourseRepository;
 import dev.sajid.backend.repositories.FacultyRepository;
-import dev.sajid.backend.repositories.SessionReporitory;
+import dev.sajid.backend.repositories.SessionRepository;
 import dev.sajid.backend.services.SessionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sessions")
 public class SessionController {
     private final SessionService sessionService;
-    private final SessionReporitory sessionReporitory;
+    private final SessionRepository sessionRepository;
     private final CourseRepository courseRepository;
     private final FacultyRepository facultyRepository;
 
-    public SessionController(SessionService sessionService, SessionReporitory sessionReporitory, CourseRepository courseRepository, FacultyRepository facultyRepository) {
+    public SessionController(SessionService sessionService, SessionRepository sessionRepository, CourseRepository courseRepository, FacultyRepository facultyRepository) {
         this.sessionService = sessionService;
-        this.sessionReporitory = sessionReporitory;
+        this.sessionRepository = sessionRepository;
         this.courseRepository = courseRepository;
         this.facultyRepository = facultyRepository;
     }
@@ -74,7 +71,7 @@ public class SessionController {
     }
 
     private void checkSessionExistence(int sessionId) {
-        if (!sessionReporitory.existsById(sessionId))
+        if (!sessionRepository.existsById(sessionId))
             throw new ResourceNotFoundException("Session not found with ID: " + sessionId);
     }
 

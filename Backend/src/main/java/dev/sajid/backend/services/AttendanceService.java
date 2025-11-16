@@ -7,71 +7,70 @@ import dev.sajid.backend.models.normalized.derived.Session;
 import dev.sajid.backend.models.normalized.student.Student;
 import dev.sajid.backend.models.normalized.student.StudentBatch;
 import dev.sajid.backend.repositories.CourseRepository;
-import dev.sajid.backend.repositories.SessionReporitory;
+import dev.sajid.backend.repositories.SessionRepository;
 import dev.sajid.backend.repositories.StudentBatchRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
+@Slf4j
 @Service
 public class AttendanceService {
     private final StudentBatchRepository studentBatchRepository;
 
     private final CourseRepository courseRepository;
 
-    private final SessionReporitory sessionReporitory;
+    private final SessionRepository sessionRepository;
 
-    public AttendanceService(StudentBatchRepository studentBatchRepository, CourseRepository courseRepository, SessionReporitory sessionReporitory) {
+
+    private final ZoneId zone = ZoneId.of("Asia/Kolkata");
+
+    public AttendanceService(StudentBatchRepository studentBatchRepository, CourseRepository courseRepository, SessionRepository sessionRepository) {
         this.studentBatchRepository = studentBatchRepository;
         this.courseRepository = courseRepository;
-        this.sessionReporitory = sessionReporitory;
+        this.sessionRepository = sessionRepository;
     }
 
-    public FullAttendanceReport calculateFullAttendanceForStudentBatch(int studentBatchId){
+    public Map<String, StudentSubjectsAttendance> calculateFullAttendanceForStudentBatch(int studentBatchId){
         StudentBatch studentBatch = studentBatchRepository.findById(studentBatchId).get();
 
         if (studentBatch.getCourses().isEmpty())
             return null;
 
-        FullAttendanceReport fullAttendanceReport = new FullAttendanceReport();
-        fullAttendanceReport.setClassName(ClassNamingService.formClassName(studentBatch.getCourses().getFirst()));
-        Map<String, FullStudentAttendance> fullStudentAttendanceMap = new HashMap<>();
+        Map<String, StudentSubjectsAttendance> multipleStudentsSubjectsAttendanceMap = new HashMap<>();
 
         for (Student student: studentBatch.getStudents()){
-            FullStudentAttendance fsa = new FullStudentAttendance();
+            StudentSubjectsAttendance fsa = new StudentSubjectsAttendance();
             fsa.setRoll(student.getRoll());
             fsa.setName(student.getName());
             fsa.setSubjectAttendanceMap(new HashMap<>());
-            fullStudentAttendanceMap.put(student.getRoll(), fsa);
+            multipleStudentsSubjectsAttendanceMap.put(student.getRoll(), fsa);
         }
 
+        // counting present days for each session of each course of each student
         for (Course course: studentBatch.getCourses()){
             for (Session session: course.getSessions()){
                 for (AttendanceRecord attendanceRecord: session.getAttendanceRecords()){
                     Student student = attendanceRecord.getStudent();
-                    if (!fullStudentAttendanceMap.get(student.getRoll()).getSubjectAttendanceMap().containsKey(course.getBranchSubject().getSubject().getId())){
+                    if (!multipleStudentsSubjectsAttendanceMap.get(student.getRoll()).getSubjectAttendanceMap().containsKey(course.getBranchSubject().getSubject().getId())){
                         SubjectAttendance ca = new SubjectAttendance();
                         ca.setSubjectName(ClassNamingService.formSubjectShortName(course));
                         ca.setSubjectId(course.getBranchSubject().getSubject().getId());
-                        fullStudentAttendanceMap.get(student.getRoll()).getSubjectAttendanceMap().put(course.getBranchSubject().getSubject().getId(), ca);
+                        multipleStudentsSubjectsAttendanceMap.get(student.getRoll()).getSubjectAttendanceMap().put(course.getBranchSubject().getSubject().getId(), ca);
                     }
-                    SubjectAttendance ca = fullStudentAttendanceMap.get(student.getRoll()).getSubjectAttendanceMap().get(course.getBranchSubject().getSubject().getId());
+                    SubjectAttendance ca = multipleStudentsSubjectsAttendanceMap.get(student.getRoll()).getSubjectAttendanceMap().get(course.getBranchSubject().getSubject().getId());
                     if (attendanceRecord.isStatus())
                         ca.daysPresent += 1;
                     ca.totalDays += 1;
-                    fullStudentAttendanceMap.get(student.getRoll()).getSubjectAttendanceMap().put(course.getBranchSubject().getSubject().getId(), ca);
+                    multipleStudentsSubjectsAttendanceMap.get(student.getRoll()).getSubjectAttendanceMap().put(course.getBranchSubject().getSubject().getId(), ca);
                 }
             }
         }
 
-        for (Map.Entry<String, FullStudentAttendance> entry: fullStudentAttendanceMap.entrySet()){
+        for (Map.Entry<String, StudentSubjectsAttendance> entry: multipleStudentsSubjectsAttendanceMap.entrySet()){
             int presentDays = 0;
             int totalDays = 0;
             for (Map.Entry<Integer, SubjectAttendance> entry1: entry.getValue().getSubjectAttendanceMap().entrySet()){
@@ -81,7 +80,7 @@ public class AttendanceService {
                 totalDays += _totalDays;
                 presentDays += _presentDays;
 
-                fullStudentAttendanceMap.get(entry.getKey()).getSubjectAttendanceMap().get(entry1.getKey()).setPercentage(
+                multipleStudentsSubjectsAttendanceMap.get(entry.getKey()).getSubjectAttendanceMap().get(entry1.getKey()).setPercentage(
                         (double)_presentDays * 100 / _totalDays
                 );
             }
@@ -92,39 +91,81 @@ public class AttendanceService {
             ca.setTotalDays(totalDays);
             ca.setSubjectName("Total");
             ca.setSubjectId(-1);
-            fullStudentAttendanceMap.get(entry.getKey()).getSubjectAttendanceMap().put(-1, ca);
+            multipleStudentsSubjectsAttendanceMap.get(entry.getKey()).getSubjectAttendanceMap().put(-1, ca);
         }
 
-        fullAttendanceReport.setFullStudentAttendanceMap(new TreeMap<>(fullStudentAttendanceMap));
-        return fullAttendanceReport;
+        return new TreeMap<>(multipleStudentsSubjectsAttendanceMap);
+    }
+
+
+    public AttendanceReport calculateConsolidatedAttendanceReport(
+            int branchCode,
+            int semester,
+            String section,
+            LocalDate startDate,
+            LocalDate endDate){
+        Optional<StudentBatch> studentBatch = studentBatchRepository.findByBranchCodeAndSemesterAndSection(branchCode, semester, section);
+
+        if (studentBatch.isEmpty()){
+            log.debug("Student batch not found for branchCode: {}, semester: {}, section: {}", branchCode, semester, section);
+            return null;
+        }
+
+        List<Course> courses = studentBatch.get().getCourses();
+
+        AttendanceReport attendanceReport = new AttendanceReport();
+//        String className = ClassNamingService.formClassName(courses.getFirst());
+        attendanceReport.setClassName("X class");
+        attendanceReport.setSubjectName("Total");
+        attendanceReport.setStudentAttendanceMap(new HashMap<>());
+
+        for (Course course: courses){
+            List<Session> sessions;
+            if (startDate != null && endDate != null){
+                Instant start = startDate.atStartOfDay(zone).toInstant();
+                Instant end = endDate.plusDays(1).atStartOfDay(zone).toInstant();
+                sessions = sessionRepository.findByCourse_IdAndCreatedAtBetween(course.getId(), start, end);
+            }else{
+                sessions = course.getSessions();
+            }
+            calculateAttendanceReport(sessions, attendanceReport);
+        }
+        return attendanceReport;
     }
 
     public AttendanceReport calculateAttendanceReportBetweenDates(int courseId, LocalDate startDate, LocalDate endDate){
         Course course = courseRepository.findById(courseId).get();
-        ZoneId zone = ZoneId.of("Asia/Kolkata");
         Instant start = startDate.atStartOfDay(zone).toInstant();
         Instant end = endDate.plusDays(1).atStartOfDay(zone).toInstant();
 
-        List<Session> sessions = sessionReporitory.findByCourse_IdAndTimeStampBetween(courseId, start, end);
+        List<Session> sessions = sessionRepository.findByCourse_IdAndCreatedAtBetween(courseId, start, end);
 
-        return calculateAttendanceReport(sessions, course);
+        AttendanceReport attendanceReport = new AttendanceReport();
+        String className = ClassNamingService.formClassName(course);
+        String subjectName = ClassNamingService.formSubjectName(course);
+        attendanceReport.setClassName(className);
+        attendanceReport.setSubjectName(subjectName);
+        attendanceReport.setStudentAttendanceMap(new HashMap<>());
+        calculateAttendanceReport(sessions, attendanceReport);
+        return attendanceReport;
     }
 
 
     public AttendanceReport calculateFullAttendanceReportOfCourse(int courseId){
         Course course = courseRepository.findById(courseId).get();
 
-        return calculateAttendanceReport(course.getSessions(), course);
-    }
-
-    private AttendanceReport calculateAttendanceReport(List<Session> sessions, Course course){
         AttendanceReport attendanceReport = new AttendanceReport();
         String className = ClassNamingService.formClassName(course);
         String subjectName = ClassNamingService.formSubjectName(course);
         attendanceReport.setClassName(className);
         attendanceReport.setSubjectName(subjectName);
+        attendanceReport.setStudentAttendanceMap(new HashMap<>());
+        calculateAttendanceReport(course.getSessions(), attendanceReport);
+        return attendanceReport;
+    }
 
-        Map<String, StudentAttendance> studentAttendanceMap = new HashMap<>();
+    private void calculateAttendanceReport(List<Session> sessions, AttendanceReport attendanceReport){
+        Map<String, StudentAttendance> studentAttendanceMap = attendanceReport.getStudentAttendanceMap();
 
         for (Session session: sessions){
             for (AttendanceRecord attendanceRecord: session.getAttendanceRecords()){
@@ -149,7 +190,5 @@ public class AttendanceService {
             studentAttendanceMap.get(entry.getKey()).setAttendancePercentage(percentage);
         }
         attendanceReport.setStudentAttendanceMap(new TreeMap<>(studentAttendanceMap));
-
-        return attendanceReport;
     }
 }

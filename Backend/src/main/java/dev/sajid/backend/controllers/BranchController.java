@@ -2,6 +2,7 @@ package dev.sajid.backend.controllers;
 
 import dev.sajid.backend.exceptions.ResourceNotFoundException;
 import dev.sajid.backend.repositories.SchemeRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,14 +20,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/branches")
+@AllArgsConstructor
 public class BranchController {
     private final BranchRepository branchRepository;
     private final SchemeRepository schemeRepository;
-
-    BranchController(BranchRepository branchRepository, SchemeRepository schemeRepository) {
-        this.branchRepository = branchRepository;
-        this.schemeRepository = schemeRepository;
-    }
 
     @GetMapping("")
     public ResponseEntity<?> getBranchesByScheme(@RequestParam("scheme") String scheme) {

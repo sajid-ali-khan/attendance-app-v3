@@ -4,10 +4,8 @@ import dev.sajid.backend.models.normalized.faculty.Faculty;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +34,9 @@ public class Session {
     private int numPresent;
     private int totalCount;
 
-    @Column(nullable = false)
-    @CreationTimestamp
-    private Instant timeStamp;
+    private Instant updatedAt;
+
+    private Instant createdAt;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "session", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
@@ -46,14 +44,13 @@ public class Session {
 
     @PrePersist
     public void onCreate() {
-        if (timeStamp == null) {
-            timeStamp = Instant.now();
-        }
+        createdAt = Instant.now();
+        updatedAt = Instant.now();
     }
 
     @PreUpdate
     public void onUpdate() {
-        timeStamp = Instant.now();
+        updatedAt = Instant.now();
     }
 
 }

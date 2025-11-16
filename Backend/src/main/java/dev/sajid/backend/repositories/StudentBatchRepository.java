@@ -50,13 +50,6 @@ public interface StudentBatchRepository extends JpaRepository<StudentBatch, Inte
             @Param("section")String section);
 
     @Query("""
-            select distinct sb.branch from StudentBatch sb
-            where sb.branch.scheme.code = '20'
-            order by sb.branch.branchCode
-            """)
-    List<Branch> findDistinctBranches();
-
-    @Query("""
             select distinct sb.branch.branchCode from StudentBatch sb
             order by sb.branch.branchCode
             """)

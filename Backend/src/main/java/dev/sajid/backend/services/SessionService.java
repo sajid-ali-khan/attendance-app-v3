@@ -9,7 +9,7 @@ import dev.sajid.backend.models.normalized.student.Student;
 import dev.sajid.backend.repositories.AttendanceRecordRepository;
 import dev.sajid.backend.repositories.CourseRepository;
 import dev.sajid.backend.repositories.FacultyRepository;
-import dev.sajid.backend.repositories.SessionReporitory;
+import dev.sajid.backend.repositories.SessionRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class SessionService {
-    private final SessionReporitory sessionReporitory;
+    private final SessionRepository sessionRepository;
 
     private final CourseRepository courseRepository;
 
@@ -26,8 +26,8 @@ public class SessionService {
 
     private final AttendanceRecordRepository attendanceRecordRepository;
 
-    public SessionService(SessionReporitory sessionReporitory, CourseRepository courseRepository, FacultyRepository facultyRepository, AttendanceRecordRepository attendanceRecordRepository) {
-        this.sessionReporitory = sessionReporitory;
+    public SessionService(SessionRepository sessionRepository, CourseRepository courseRepository, FacultyRepository facultyRepository, AttendanceRecordRepository attendanceRecordRepository) {
+        this.sessionRepository = sessionRepository;
         this.courseRepository = courseRepository;
         this.facultyRepository = facultyRepository;
         this.attendanceRecordRepository = attendanceRecordRepository;
@@ -37,11 +37,11 @@ public class SessionService {
         ZoneId zone = ZoneId.of("Asia/Kolkata");
         Instant start = date.atStartOfDay(zone).toInstant();
         Instant end = date.plusDays(1).atStartOfDay(zone).toInstant();
-        List<Session> sessions = sessionReporitory.findByCourse_IdAndTimeStampBetween(courseId, start, end);
+        List<Session> sessions = sessionRepository.findByCourse_IdAndCreatedAtBetween(courseId, start, end);
         return sessions.stream()
                 .collect(Collectors.toMap(
                         Session::getId, // key mapper
-                        s -> new SessionDto(s.getId(), s.getSessionName(), s.getTimeStamp()),
+                        s -> new SessionDto(s.getId(), s.getSessionName(), s.getCreatedAt()),
                         (existing, replacement) -> existing // handle duplicate keys (if any)
                 ));
     }
@@ -50,13 +50,13 @@ public class SessionService {
         Session newSession = new Session();
         newSession.setCourse(courseRepository.findById(courseId).get());
         newSession.setFaculty(facultyRepository.findByUsername(facultyCode).get());
-        sessionReporitory.save(newSession);
+        sessionRepository.save(newSession);
         createAndAddAttendanceRecords(newSession);
-        return new SessionDto(newSession.getId(), newSession.getSessionName(), newSession.getTimeStamp());
+        return new SessionDto(newSession.getId(), newSession.getSessionName(), newSession.getUpdatedAt());
     }
 
     public SessionRegisterDto getSessionRegister(int sessionId) {
-        Session session = sessionReporitory.findById(sessionId).get();
+        Session session = sessionRepository.findById(sessionId).get();
 
         Map<Integer, AttendanceRecordDto> studentAttendanceRowMap = new HashMap<>();
 
@@ -74,13 +74,13 @@ public class SessionService {
                 session.getSessionName(),
                 session.getNumPresent(),
                 session.getTotalCount(),
-                session.getTimeStamp(),
+                session.getUpdatedAt(),
                 new TreeMap<>(studentAttendanceRowMap)
         );
     }
 
     public void updateSession(SessionRegisterDto sessionRegisterDto){
-        Session actualSession = sessionReporitory.findById(sessionRegisterDto.sessionId()).get();
+        Session actualSession = sessionRepository.findById(sessionRegisterDto.sessionId()).get();
         actualSession.setSessionName(sessionRegisterDto.sessionName());
         actualSession.setNumPresent(sessionRegisterDto.presentCount());
         updateAttendanceRecords(actualSession, sessionRegisterDto.attendanceRowMap());
@@ -92,7 +92,7 @@ public class SessionService {
             attendanceRecord.setStatus(attendanceRecordDtoMap.get(attendanceRecord.getId()).status());
         }
         attendanceRecordRepository.saveAll(attendanceRecords);
-        sessionReporitory.save(session);
+        sessionRepository.save(session);
     }
 
     private void createAndAddAttendanceRecords(Session session){
@@ -106,10 +106,10 @@ public class SessionService {
         attendanceRecordRepository.saveAll(attendanceRecords);
         session.setAttendanceRecords(attendanceRecords);
         session.setTotalCount(attendanceRecords.size());
-        sessionReporitory.save(session);
+        sessionRepository.save(session);
     }
 
     public void deleteSession(int sessionId) {
-        sessionReporitory.deleteById(sessionId);
+        sessionRepository.deleteById(sessionId);
     }
 }

@@ -1,5 +1,6 @@
 package dev.sajid.backend.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,32 +12,24 @@ import dev.sajid.backend.models.normalized.student.StudentBatch;
 import dev.sajid.backend.repositories.BranchRepository;
 import dev.sajid.backend.services.AttendanceService;
 import dev.sajid.backend.services.BranchService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import dev.sajid.backend.repositories.StudentBatchRepository;
 
-import static java.rmi.server.LogStream.log;
-
 
 @RestController
 @RequestMapping("/api/student-batches")
 @Slf4j
+@AllArgsConstructor
 public class StudentBatchController {
     private final StudentBatchRepository studentBatchRepository;
 
     private final AttendanceService attendanceService;
-
     private final BranchRepository branchRepository;
     private final BranchService branchService;
-
-    public StudentBatchController(StudentBatchRepository studentBatchRepository, AttendanceService attendanceService, BranchRepository branchRepository, BranchService branchService) {
-        this.studentBatchRepository = studentBatchRepository;
-        this.attendanceService = attendanceService;
-        this.branchRepository = branchRepository;
-        this.branchService = branchService;
-    }
 
     @GetMapping("/branches")
     public ResponseEntity<?> getBranches() {
@@ -82,7 +75,6 @@ public class StudentBatchController {
         }
         List<String> sections = studentBatchRepository.findDistinctSectionsByBranchCodeAndSemester(branchCode, semester);
         return ResponseEntity.ok(sections);
-
     }
 
     @GetMapping("/subjects")
@@ -142,6 +134,19 @@ public class StudentBatchController {
         log.debug("BranchId = {}, semester = {}, section = {}", branchId, semester, section);
 
         return ResponseEntity.ok(attendanceService.calculateFullAttendanceForStudentBatch(studentBatch.get().getId()));
+    }
+
+    @GetMapping("/report/consolidated")
+    public ResponseEntity<?> getFullAttendanceReport(
+            @RequestParam("branchCode") int branchCode,
+            @RequestParam("semester") int semester,
+            @RequestParam("section") String section,
+            @RequestParam(value = "startDate", required = false) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) LocalDate endDate
+    ){
+        return ResponseEntity.ok(attendanceService.calculateConsolidatedAttendanceReport(
+                branchCode, semester, section, startDate, endDate
+        ));
     }
 
     private void checkBranchExistence(int branchId) {
