@@ -5,6 +5,7 @@ import java.time.Instant;
 public record SessionDto (
         int sessionId,
         String sessionName,
+        Instant createdAt,
         Instant updatedAt
 ){
 }

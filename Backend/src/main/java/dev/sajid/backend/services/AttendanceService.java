@@ -114,8 +114,8 @@ public class AttendanceService {
         List<Course> courses = studentBatch.get().getCourses();
 
         AttendanceReport attendanceReport = new AttendanceReport();
-//        String className = ClassNamingService.formClassName(courses.getFirst());
-        attendanceReport.setClassName("X class");
+        String className = ClassNamingService.formClassNameFromStudentBatch(studentBatch.get());
+        attendanceReport.setClassName(className);
         attendanceReport.setSubjectName("Total");
         attendanceReport.setStudentAttendanceMap(new HashMap<>());
 

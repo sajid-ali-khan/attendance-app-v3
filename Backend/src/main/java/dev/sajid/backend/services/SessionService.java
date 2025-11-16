@@ -41,7 +41,7 @@ public class SessionService {
         return sessions.stream()
                 .collect(Collectors.toMap(
                         Session::getId, // key mapper
-                        s -> new SessionDto(s.getId(), s.getSessionName(), s.getCreatedAt()),
+                        s -> new SessionDto(s.getId(), s.getSessionName(), s.getCreatedAt(), s.getUpdatedAt()),
                         (existing, replacement) -> existing // handle duplicate keys (if any)
                 ));
     }
@@ -52,7 +52,7 @@ public class SessionService {
         newSession.setFaculty(facultyRepository.findByUsername(facultyCode).get());
         sessionRepository.save(newSession);
         createAndAddAttendanceRecords(newSession);
-        return new SessionDto(newSession.getId(), newSession.getSessionName(), newSession.getUpdatedAt());
+        return new SessionDto(newSession.getId(), newSession.getSessionName(), newSession.getCreatedAt(), newSession.getUpdatedAt());
     }
 
     public SessionRegisterDto getSessionRegister(int sessionId) {

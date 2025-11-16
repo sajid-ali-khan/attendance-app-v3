@@ -1,19 +1,24 @@
 package dev.sajid.backend.services;
 
 import dev.sajid.backend.models.normalized.derived.Course;
+import dev.sajid.backend.models.normalized.student.StudentBatch;
 
 public class ClassNamingService {
     public static String formClassName(Course course){
 
-        String branchName = course.getBranchSubject().getBranch().getShortForm();
-        int semester = course.getStudentBatch().getSemester();
-        String section = course.getStudentBatch().getSection();
+        if (course == null) return "Class name";
+        return formClassNameFromStudentBatch(course.getStudentBatch());
+    }
+
+    public static String formClassNameFromStudentBatch(StudentBatch studentBatch){
+        if (studentBatch == null) return "Class name";
+
+        String branchName = studentBatch.getBranch().getShortForm();
+        int semester = studentBatch.getSemester();
+        String section = studentBatch.getSection();
 
         return String.format(
-                "%s%s%s",
-                branchName,
-                semester,
-                section
+                "%s%s%s", branchName, semester, section
         );
     }
 
