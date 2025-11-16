@@ -12,6 +12,7 @@ import dev.sajid.backend.models.normalized.student.StudentBatch;
 import dev.sajid.backend.repositories.BranchRepository;
 import dev.sajid.backend.services.AttendanceService;
 import dev.sajid.backend.services.BranchService;
+import dev.sajid.backend.services.ClassNamingService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -133,7 +134,11 @@ public class StudentBatchController {
         }
         log.debug("BranchId = {}, semester = {}, section = {}", branchId, semester, section);
 
-        return ResponseEntity.ok(attendanceService.calculateFullAttendanceForStudentBatch(studentBatch.get().getId()));
+        var attendanceReport = attendanceService.calculateFullAttendanceForStudentBatch(studentBatch.get().getId());
+        return ResponseEntity.ok().body(Map.of(
+                "className", ClassNamingService.formClassNameFromStudentBatch(studentBatch.get()),
+                "fullStudentAttendanceMap", attendanceReport
+        ));
     }
 
     @GetMapping("/report/consolidated")
