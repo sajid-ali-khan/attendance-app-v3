@@ -75,6 +75,7 @@ public class SessionService {
                 session.getNumPresent(),
                 session.getTotalCount(),
                 session.getUpdatedAt(),
+                session.getCreatedAt(),
                 new TreeMap<>(studentAttendanceRowMap)
         );
     }

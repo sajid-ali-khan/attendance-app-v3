@@ -12,6 +12,7 @@ public record SessionRegisterDto(
         int presentCount,
         int totalCount,
         Instant updatedAt,
+        Instant createdAt,
         Map<Integer, AttendanceRecordDto> attendanceRowMap
 ) {
 
