@@ -97,7 +97,12 @@ export const AttendanceReportView = () => {
 
     // ✅ Fetch full report only once on button click
     const handleGenerateReport = async () => {
-        if (!selectedBranchId || !selectedSemester || !selectedSection) return;
+        console.log('Generating report...');
+        console.log({ selectedBranchId, selectedSemester, selectedSection });
+        if (!selectedBranchId || !selectedSemester || !selectedSection) {
+            console.log('Please select branch, semester, and section before generating report.');
+            return;
+        }
 
         try {
             const res = await axiosClient.get("/student-batches/report", {
@@ -107,6 +112,7 @@ export const AttendanceReportView = () => {
                     section: selectedSection,
                 },
             });
+            console.log('Report data fetched:', res.data);
 
             const data = res.data;
             setClassName(data.className);
@@ -172,8 +178,8 @@ export const AttendanceReportView = () => {
         })
     );
 
+    const tableHeaders = ["roll", "name", ...selectedSubjects, "-1"]; // remove Number()
 
-    const tableHeaders = ["roll", "name", ...selectedSubjects, -1];
 
     return (
         <div>
@@ -225,8 +231,11 @@ export const AttendanceReportView = () => {
                                     <tr>
                                         {tableHeaders.map((header) => {
                                             let label = header;
-                                            if (!isNaN(header)) {
-                                                label = header === -1 ? "Total %" : subjects.find(s => s.id === header)?.shortForm || header;
+                                            if (header === -1) {
+                                                label = "Total %";
+                                            } else if (!isNaN(header)) {
+                                                const sub = subjects.find(s => s.id === header);
+                                                label = sub ? sub.shortForm : header;
                                             }
                                             return (
                                                 <th key={header} className="p-3 font-medium capitalize">
