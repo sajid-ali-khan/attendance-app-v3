@@ -34,6 +34,20 @@ export const MultiSelectDropdown = ({
     onChange(newSelected);
   };
 
+  // ✅ Handle "Select All" / "Deselect All"
+  const handleSelectAll = () => {
+    if (selectedOptions.length === options.length) {
+      // Deselect all
+      onChange([]);
+    } else {
+      // Select all
+      onChange(options.map((opt) => opt.id));
+    }
+  };
+
+  const allSelected =
+    options.length > 0 && selectedOptions.length === options.length;
+
   return (
     <div className="relative" ref={dropdownRef}>
       <label className="block text-sm font-medium text-slate-600 mb-1">
@@ -47,7 +61,9 @@ export const MultiSelectDropdown = ({
       >
         <span className="text-slate-700 truncate">
           {selectedOptions.length > 0
-            ? `${selectedOptions.length} selected`
+            ? allSelected
+              ? "All subjects selected"
+              : `${selectedOptions.length} selected`
             : `Select ${label}`}
         </span>
         <svg
@@ -58,12 +74,29 @@ export const MultiSelectDropdown = ({
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
       </button>
 
       {isOpen && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-slate-300 shadow-lg max-h-60 overflow-y-auto rounded-md">
+          {/* Select All Option */}
+          <label className="flex items-center w-full px-3 py-2 text-sm font-semibold text-slate-800 bg-slate-50 border-b border-slate-200 hover:bg-slate-100 cursor-pointer">
+            <input
+              type="checkbox"
+              className="mr-3 h-4 w-4 rounded text-slate-600 focus:ring-slate-500"
+              checked={allSelected}
+              onChange={handleSelectAll}
+            />
+            {allSelected ? "Deselect All" : "Select All"}
+          </label>
+
+          {/* Individual Options */}
           {options.map((subject) => (
             <label
               key={subject.id}
