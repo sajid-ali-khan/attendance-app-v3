@@ -113,7 +113,9 @@ public class StudentBatchController {
             @RequestParam(value = "branchId", required = false) Integer branchId,
             @RequestParam(value = "branchCode", required = false) Integer branchCode,
             @RequestParam("semester") Integer semester,
-            @RequestParam("section") String section
+            @RequestParam("section") String section,
+            @RequestParam(value = "startDate", required = false) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) LocalDate endDate
     ) {
         if (branchCode == null && branchId == null){
             return ResponseEntity.badRequest().body(Map.of(
@@ -134,7 +136,7 @@ public class StudentBatchController {
         }
         log.debug("BranchId = {}, semester = {}, section = {}", branchId, semester, section);
 
-        var attendanceReport = attendanceService.calculateFullAttendanceForStudentBatch(studentBatch.get().getId());
+        var attendanceReport = attendanceService.calculateFullAttendanceForStudentBatch(studentBatch.get().getId(), startDate, endDate);
         return ResponseEntity.ok().body(Map.of(
                 "className", ClassNamingService.formClassNameFromStudentBatch(studentBatch.get()),
                 "fullStudentAttendanceMap", attendanceReport

@@ -34,7 +34,7 @@ public class AttendanceService {
         this.sessionRepository = sessionRepository;
     }
 
-    public Map<String, StudentSubjectsAttendance> calculateFullAttendanceForStudentBatch(int studentBatchId){
+    public Map<String, StudentSubjectsAttendance> calculateFullAttendanceForStudentBatch(int studentBatchId, LocalDate startDate, LocalDate endDate){
         StudentBatch studentBatch = studentBatchRepository.findById(studentBatchId).get();
 
         if (studentBatch.getCourses().isEmpty())
@@ -52,7 +52,15 @@ public class AttendanceService {
 
         // counting present days for each session of each course of each student
         for (Course course: studentBatch.getCourses()){
-            for (Session session: course.getSessions()){
+            List<Session> sessions;
+            if (startDate != null && endDate != null){
+                Instant start = startDate.atStartOfDay(zone).toInstant();
+                Instant end = endDate.plusDays(1).atStartOfDay(zone).toInstant();
+                sessions = sessionRepository.findByCourse_IdAndCreatedAtBetween(course.getId(), start, end);
+            }else{
+                sessions = course.getSessions();
+            }
+            for (Session session: sessions){
                 for (AttendanceRecord attendanceRecord: session.getAttendanceRecords()){
                     Student student = attendanceRecord.getStudent();
                     if (!multipleStudentsSubjectsAttendanceMap.get(student.getRoll()).getSubjectAttendanceMap().containsKey(course.getBranchSubject().getSubject().getId())){
