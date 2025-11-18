@@ -189,7 +189,7 @@ export const AttendanceReportView = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start mb-6 pb-6 border-b border-slate-200">
                     <div>
                         <label className="block text-sm font-medium text-slate-600 mb-1">
-                            Branch <span className="text-red-500">*</span>
+                            Branch
                         </label>
                         <SelectInput
                             label=""
@@ -201,30 +201,35 @@ export const AttendanceReportView = () => {
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-slate-600 mb-1">
-                            Semester <span className="text-red-500">*</span>
+                            Semester
                         </label>
                         <SelectInput 
-                            label=""
+                            label="" 
                             options={semesters} 
                             onChange={setSelectedSemester} 
                         />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-slate-600 mb-1">
-                            Section <span className="text-red-500">*</span>
+                            Section
                         </label>
                         <SelectInput 
-                            label=""
+                            label="" 
                             options={sections} 
                             onChange={setSelectedSection} 
                         />
                     </div>
-                    <SelectInput
-                        label="Subject(s)"
-                        options={subjects}
-                        selectedOptions={selectedSubjects}
-                        onChange={setSelectedSubjects}
-                    />
+                    <div>
+                        <label className="block text-sm font-medium text-slate-600 mb-1">
+                            Subject(s) <span className="text-slate-400 text-xs">(Optional)</span>
+                        </label>
+                        <MultiSelectDropdown
+                            label=""
+                            options={subjects}
+                            selectedOptions={selectedSubjects}
+                            onChange={setSelectedSubjects}
+                        />
+                    </div>
                 </div>
 
                 {/* Buttons */}
