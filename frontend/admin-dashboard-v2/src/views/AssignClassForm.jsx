@@ -1,178 +1,55 @@
 // ====================================================================================
 // File: src/views/AssignClassForm.jsx
 
-import { useEffect, useState } from "react";
 import { SearchableDropdown } from "../components/shared/SearchableDropdown";
 import { SectionTitle } from "../components/ui/SectionTitle";
 import { SelectInput } from "../components/ui/SelectInput";
 import { Card } from "../components/ui/Card";
-import axiosClient from "../api/axiosClient";
-import { useAuth } from "../provider/AuthProvider";
+import { useAssignClassFilters } from "../hooks/useAssignClassFilters";
+import { useAssignClass } from "../hooks/useAssignClass";
 
 // ====================================================================================
 export const AssignClassForm = () => {
-    const [selectedFacultyId, setSelectedFacultyId] = useState('');
-    const [selectedScheme, setSelectedScheme] = useState('');
-    const [selectedBranchId, setSelectedBranchId] = useState('');
-    const [selectedSemester, setSelectedSemester] = useState('');
-    const [selectedSection, setSelectedSection] = useState('');
-    const [selectedSubjectId, setSelectedSubjectId] = useState('');
+    const {
+        selectedScheme,
+        setSelectedScheme,
+        selectedBranchId,
+        setSelectedBranchId,
+        selectedSemester,
+        setSelectedSemester,
+        selectedSection,
+        setSelectedSection,
+        selectedSubjectId,
+        setSelectedSubjectId,
+        selectedFacultyId,
+        setSelectedFacultyId,
+        schemes,
+        branches,
+        semesters,
+        sections,
+        subjects,
+        faculties,
+        resetSelections,
+    } = useAssignClassFilters();
 
-    const [schemes, setSchemes] = useState([]);
-    const [branches, setBranches] = useState([]);
-    const [semesters, setSemesters] = useState([]);
-    const [sections, setSections] = useState([]);
-    const [subjects, setSubjects] = useState([]);
-    const [faculties, setFaculties] = useState([]);
-    
-    // State for UI feedback
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
-    const { token } = useAuth();
+    const { errorMessage, successMessage, handleAssignClass } = useAssignClass(resetSelections);
 
-    const resetSelections = (levels = []) => {
-        if (!token) return;
-        if (levels.includes("branch")) {
-            setSelectedBranchId('');
-            setBranches([]);
-        }
-        if (levels.includes("semester")) {
-            setSelectedSemester('');
-            setSemesters([]);
-        }
-        if (levels.includes("section")) {
-            setSelectedSection('');
-            setSections([]);
-        }
-        if (levels.includes("subject")) {
-            setSelectedSubjectId('');
-            setSubjects([]);
-        }
+    const resetForm = () => {
+        setSelectedScheme('');
+        resetSelections(["branch", "semester", "section", "subject"]);
+        setSelectedFacultyId('');
     };
 
-
-    useEffect(() => {
-        // set initial data(schemes, faculties)
-        const fetchInitialData = () => {
-            axiosClient.get('/schemes')
-                .then(response => {
-                    console.log("schemes:", response.data);
-                    setSchemes(response.data);
-                })
-                .catch(error => {
-                    console.error("Error fetching schemes:", error);
-                });
-
-            axiosClient.get('/faculties')
-                .then(response => {
-                    setFaculties(response.data);
-                })
-                .catch(error => {
-                    console.error("Error fetching faculties:", error);
-                });
-        };
-        fetchInitialData();
-    }, []);
-
-    useEffect(() => {
-        // reset branch for selected scheme
-        if (!selectedScheme) return;
-        resetSelections(["branch", "semester", "section", "subject"]);
-
-        axiosClient.get('/branches', {
-            params: { scheme: selectedScheme }
-        })
-            .then(response => {
-                setBranches(response.data);
-                // console.log("Fetched branches for scheme:", selectedScheme, " - ", response.data);
-            })
-            .catch(error => {
-                console.error("Error fetching branches:", error);
-            });
-    }, [selectedScheme]);
-
-    useEffect(() => {
-        // Reset the semesters based on branch
-        if (!selectedBranchId) return;
-        resetSelections(["semester", "section", "subject"]);
-        axiosClient.get(`/student-batches/semesters`, {
-            params: { branchId: selectedBranchId }
-        })
-            .then(response => {
-                setSemesters(response.data);
-                // console.log("Fetched semesters for branch:", selectedBranchId, " - ", response.data);
-            })
-            .catch(error => {
-                console.error("Error fetching semesters:", error);
-            });
-    }, [selectedScheme, selectedBranchId]);
-
-    useEffect(() => {
-        // Reset the sections based on semester
-        if (!selectedSemester || !selectedBranchId) return;
-        resetSelections(["section", "subject"]);
-        axiosClient.get(`/student-batches/sections`, {
-            params: { branchId: selectedBranchId, semester: selectedSemester }
-        })
-            .then(response => {
-                setSections(response.data);
-                // console.log("Fetched sections for semester:", selectedSemester, " - ", response.data);
-            })
-            .catch(error => {
-                console.error("Error fetching sections:", error);
-            });
-    }, [selectedScheme, selectedBranchId, selectedSemester]);
-
-    useEffect(() => {
-        // Reset subjects based on section
-        if (!selectedSection || !selectedSemester || !selectedBranchId) return;
-        resetSelections(["subject"]);
-
-        axiosClient.get('/branch-subjects/subjects', {
-            params: { branchId: selectedBranchId, semester: selectedSemester }
-        })
-            .then(response => {
-                setSubjects(response.data);
-                // console.log("Fetched subjects for section:", selectedSection, " - ", response.data);
-            })
-            .catch(error => {
-                console.error("Error fetching subjects:", error);
-            });
-    }, [selectedScheme, selectedBranchId, selectedSemester, selectedSection]);
-
-    const handleAssignClass = () => {
-        // Clear previous messages before a new attempt
-        setSuccessMessage('');
-        setErrorMessage('');
-
-        // Frontend validation
-        if (!selectedBranchId || !selectedSemester || !selectedSection || !selectedSubjectId || !selectedFacultyId) {
-            setErrorMessage('Please ensure all fields are selected before assigning.');
-            return;
-        }
+    const onSubmit = () => {
         const payload = {
             branchId: selectedBranchId,
             semester: selectedSemester,
             section: selectedSection,
             subjectId: selectedSubjectId,
             facultyId: selectedFacultyId
-        }
-        // console.log("Assigning class:",payload);
-        axiosClient.post('/course-assignments', payload)
-            .then(response => {
-                setSuccessMessage("Class has been assigned successfully!");
-                // Optionally reset form fields after success
-                setSelectedScheme('');
-                resetSelections(["branch", "semester", "section", "subject"]);
-                setSelectedFacultyId('');
-            })
-            .catch(error => {
-                console.error("Error assigning class:", error);
-                // Try to get a specific error message from the backend, otherwise show a generic one
-                const message = error.response?.data?.message || "Failed to assign class. Please try again.";
-                setErrorMessage(message);
-            });
-    }
+        };
+        handleAssignClass(payload, resetForm);
+    };
 
     return (
         <div>
@@ -191,18 +68,59 @@ export const AssignClassForm = () => {
                         <p>{successMessage}</p>
                     </div>
                 )}
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <SelectInput label="Scheme" options={schemes} value={selectedScheme} onChange={setSelectedScheme} />
-                    <SelectInput label="Branch" options={branches} value={selectedBranchId} onChange={setSelectedBranchId} getOptionLabel={(opt) => `${opt.shortForm} - ${opt.fullForm}`} getOptionValue={(opt) => opt.id} />
-                    <SelectInput label="Semester" options={semesters} value={selectedSemester} onChange={setSelectedSemester} />
-                    <SelectInput label="Section" options={sections} value={selectedSection} onChange={setSelectedSection} />
-                    <SelectInput label="Subject" options={subjects} value={selectedSubjectId} onChange={setSelectedSubjectId} getOptionLabel={(opt) => `${opt.shortForm} - ${opt.fullForm}`} getOptionValue={(opt) => opt.id} />
-                    <SearchableDropdown label="Faculty" options={faculties} selectedFacultyId={selectedFacultyId} setSelectedFacultyId={setSelectedFacultyId} />
+                    <SelectInput 
+                        label="Scheme" 
+                        options={schemes} 
+                        value={selectedScheme} 
+                        onChange={setSelectedScheme} 
+                    />
+                    <SelectInput 
+                        label="Branch" 
+                        options={branches} 
+                        value={selectedBranchId} 
+                        onChange={setSelectedBranchId} 
+                        getOptionLabel={(opt) => `${opt.shortForm} - ${opt.fullForm}`} 
+                        getOptionValue={(opt) => opt.id} 
+                    />
+                    <SelectInput 
+                        label="Semester" 
+                        options={semesters} 
+                        value={selectedSemester} 
+                        onChange={setSelectedSemester} 
+                    />
+                    <SelectInput 
+                        label="Section" 
+                        options={sections} 
+                        value={selectedSection} 
+                        onChange={setSelectedSection} 
+                    />
+                    <SelectInput 
+                        label="Subject" 
+                        options={subjects} 
+                        value={selectedSubjectId} 
+                        onChange={setSelectedSubjectId} 
+                        getOptionLabel={(opt) => `${opt.shortForm} - ${opt.fullForm}`} 
+                        getOptionValue={(opt) => opt.id} 
+                    />
+                    <SearchableDropdown 
+                        label="Faculty" 
+                        options={faculties} 
+                        selectedFacultyId={selectedFacultyId} 
+                        setSelectedFacultyId={setSelectedFacultyId} 
+                    />
                 </div>
+                
                 <div className="mt-6">
-                    <button className="bg-slate-800 cursor-pointer text-white font-semibold py-2 px-6 hover:bg-slate-700" onClick={handleAssignClass}>Assign</button>
+                    <button 
+                        className="bg-slate-800 cursor-pointer text-white font-semibold py-2 px-6 hover:bg-slate-700" 
+                        onClick={onSubmit}
+                    >
+                        Assign
+                    </button>
                 </div>
             </Card>
         </div>
     );
-}; 
+};
