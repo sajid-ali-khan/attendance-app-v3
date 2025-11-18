@@ -178,7 +178,7 @@ export const AttendanceReportView = () => {
         })
     );
 
-    const tableHeaders = ["roll", "name", ...selectedSubjects, "-1"]; // remove Number()
+    const tableHeaders = ["roll", "name", ...selectedSubjects, -1]; // remove Number()
 
 
     return (
