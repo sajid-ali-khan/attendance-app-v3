@@ -187,16 +187,39 @@ export const AttendanceReportView = () => {
             <Card>
                 {/* Filters */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start mb-6 pb-6 border-b border-slate-200">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-600 mb-1">
+                            Branch <span className="text-red-500">*</span>
+                        </label>
+                        <SelectInput
+                            label=""
+                            options={branches}
+                            onChange={setSelectedBranchId}
+                            getOptionLabel={(b) => `${b.shortForm} - ${b.fullForm}`}
+                            getOptionValue={(b) => b.branchCode}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-600 mb-1">
+                            Semester <span className="text-red-500">*</span>
+                        </label>
+                        <SelectInput 
+                            label=""
+                            options={semesters} 
+                            onChange={setSelectedSemester} 
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-slate-600 mb-1">
+                            Section <span className="text-red-500">*</span>
+                        </label>
+                        <SelectInput 
+                            label=""
+                            options={sections} 
+                            onChange={setSelectedSection} 
+                        />
+                    </div>
                     <SelectInput
-                        label="Branch"
-                        options={branches}
-                        onChange={setSelectedBranchId}
-                        getOptionLabel={(b) => `${b.shortForm} - ${b.fullForm}`}
-                        getOptionValue={(b) => b.branchCode}
-                    />
-                    <SelectInput label="Semester" options={semesters} onChange={setSelectedSemester} />
-                    <SelectInput label="Section" options={sections} onChange={setSelectedSection} />
-                    <MultiSelectDropdown
                         label="Subject(s)"
                         options={subjects}
                         selectedOptions={selectedSubjects}
