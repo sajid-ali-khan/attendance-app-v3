@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import axiosClient from "../api/axiosClient";
+import { convertToCSV, downloadCSV } from "../utils/csvExport";
 
 export const useAttendanceReport = (selectedSubjects) => {
     const [reportData, setReportData] = useState([]);
@@ -93,6 +94,41 @@ export const useAttendanceReport = (selectedSubjects) => {
         rebuildReport(_studentMap, selectedSubjects);
     }, [selectedSubjects, fullReportData, rebuildReport]);
 
+    // Export report as CSV
+    const handleDownloadReport = useCallback((filteredData, subjects, className) => {
+        if (!filteredData || filteredData.length === 0) {
+            console.warn("No data to download");
+            return;
+        }
+
+        // Build headers dynamically
+        const headers = [
+            { key: 'roll', label: 'Roll Number' },
+            { key: 'name', label: 'Name' },
+        ];
+
+        // Add subject headers
+        selectedSubjects.forEach(subjectId => {
+            const subject = subjects.find(s => s.id === subjectId);
+            const label = subject ? `${subject.shortForm} (%)` : `Subject ${subjectId} (%)`;
+            headers.push({ key: subjectId, label });
+        });
+
+        // Add total percentage header
+        headers.push({ key: -1, label: 'Total (%)' });
+
+        // Convert to CSV
+        const csvContent = convertToCSV(filteredData, headers);
+
+        // Generate filename with timestamp
+        const timestamp = new Date().toISOString().split('T')[0];
+        const sanitizedClassName = className.replace(/[^a-z0-9]/gi, '_');
+        const filename = `Attendance_Report_${sanitizedClassName}_${timestamp}.csv`;
+
+        // Trigger download
+        downloadCSV(csvContent, filename);
+    }, [selectedSubjects]);
+
     return {
         reportData,
         className,
@@ -103,5 +139,6 @@ export const useAttendanceReport = (selectedSubjects) => {
         handleGenerateReport,
         handleApplyDateFilter,
         handleClearDateFilter,
+        handleDownloadReport,
     };
 };

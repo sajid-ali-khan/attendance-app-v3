@@ -36,6 +36,7 @@ export const AttendanceReportView = () => {
         handleGenerateReport,
         handleApplyDateFilter,
         handleClearDateFilter,
+        handleDownloadReport,
     } = useAttendanceReport(selectedSubjects);
 
     const { handleFilterChange, filteredData } = useTableFilters(reportData);
@@ -73,7 +74,10 @@ export const AttendanceReportView = () => {
                         Generate Report
                     </button>
                     {reportData.length > 0 && (
-                        <button className="bg-white text-slate-700 font-semibold py-2 px-4 border border-slate-300 hover:bg-slate-50 transition-colors duration-200 h-10 flex items-center gap-2">
+                        <button 
+                            onClick={() => handleDownloadReport(filteredData, subjects, className)}
+                            className="bg-white text-slate-700 font-semibold py-2 px-4 border border-slate-300 hover:bg-slate-50 transition-colors duration-200 h-10 flex items-center gap-2"
+                        >
                             <DownloadIcon /> Download Report
                         </button>
                     )}
