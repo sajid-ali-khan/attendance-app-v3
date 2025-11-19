@@ -3,7 +3,6 @@ import {
   createContext,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
@@ -16,26 +15,49 @@ const AuthProvider = ({ children }) => {
     setToken_(newToken);
   };
 
+  // Helper to check token expiration
+  const isTokenExpired = (token) => {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 < Date.now();
+    } catch {
+      return true;
+    }
+  };
+
   useEffect(() => {
     if (token) {
-      axiosClient.defaults.headers.common["Authorization"] = "Bearer " + token;
       localStorage.setItem("token", token);
+      
+      // Check if token is already expired
+      if (isTokenExpired(token)) {
+        setToken(null);
+        localStorage.removeItem("token");
+      }
     } else {
-      delete axiosClient.defaults.headers.common["Authorization"];
       localStorage.removeItem("token");
     }
   }, [token]);
 
-  const isAuthenticated = !!token; // ✅ derived flag
+  // Periodic check for token expiration (every 60 seconds)
+  useEffect(() => {
+    if (!token) return;
 
-  const contextValue = useMemo(
-    () => ({
-      token,
-      setToken,
-      isAuthenticated,
-    }),
-    [token, isAuthenticated]
-  );
+    const interval = setInterval(() => {
+      if (isTokenExpired(token)) {
+        console.log('Token expired - logging out');
+        setToken(null);
+        localStorage.removeItem("token");
+      }
+    }, 60000); // Check every 60 seconds
+
+    return () => clearInterval(interval);
+  }, [token]);
+
+  const contextValue = {
+    token,
+    setToken,
+  };
 
   return (
     <AuthContext.Provider value={contextValue}>
